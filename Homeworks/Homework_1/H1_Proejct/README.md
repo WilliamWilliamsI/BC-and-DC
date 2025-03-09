@@ -14,6 +14,7 @@ H1_Proejct/
         ├── UTXOPool.java
         └── TxHandler.java
     ├── test.java/ # The test classes.
+    
 └── .gitignore # The gitignore file.
 ```
 
@@ -86,12 +87,12 @@ public class TxHandler {
 
 ## Implementation & Test
 
-In this part, i will describe 2 detailed things:
+The runnable result code is in [`TxHandler.java`]( ./src/main/java/TxHandler.java) ) and [`TxHandleTest.java`]( src/test/java/TxHandlerTest.java ). In this section, I will elaborate on the class **implementation** and **test** code writing logic:
 
 - The **impementation of TxHandler class**, which contains 3 methods: `TxHandler()`, `isValidTx()`, and `handleTxs()`. 
 - The **test suite** to verify the implementation.
 
-### idea of the implementation
+### Details of the implementation
 
 **1. `TxHandler(UTXOPool utxoPool)`**
 
@@ -192,9 +193,7 @@ public TxHandler(UTXOPool utxoPool) {
 
 <center>Figure 1. The example of transactions.</center>
 
-
-
-### idea of the test suite
+### Details of the test suite
 
 
 
