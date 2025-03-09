@@ -181,6 +181,17 @@ public TxHandler(UTXOPool utxoPool) {
   - **Step 2.** Check the validity of each transaction using `isValidTx()`. If it is valid, add it into the `acceptedTxs` and update the `UTXOPool`: add new valid output & delete the spent utxo.
   - **Step 3.** If there is no new valid transactions can be found, stop going through all the transactions. The list  `acceptedTxs` is what we need!
 
+:exclamation:  This is not the end of the analysis. After analyzing, it is easy to see that **it is difficult to deal with double spending without a timestamp**, because there is no way to tell which of the inputs using the same utxo is valid. As Figure 1. shows, **there is no way to determine whether TX2 or TX4 is valid**. Therefore, after talking with the TA, an additional assumption is made in this place: **for transactions with the double-spend problem, the one that is processed first is valid and the one that is processed later is invalid**, which is equivalent to a random selection.
+
+> For example, in Figure 1:
+>
+> - if the processing sequence is `[TX1, TX2, TX4, TX3]`, then the `acceptedTxs = [TX1, TX2, TX3]`
+> - if the processing sequence is `[TX1, TX4, TX2, TX3]`, then the `acceptedTxs = [TX1, TX4]`
+
+<img src="./docs/imgs/txs_example.png" alt="txs_example " style="zoom:15%;" />
+
+<center>Figure 1. The example of transactions.</center>
+
 
 
 ### idea of the test suite
