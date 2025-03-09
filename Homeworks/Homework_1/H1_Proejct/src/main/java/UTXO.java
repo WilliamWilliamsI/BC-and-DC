@@ -9,7 +9,6 @@ package main.java;
 import java.util.Arrays;
 
 public class UTXO implements Comparable<UTXO> {
-
     // hash of the transaction from which this UTXO originates
     private byte[] txHash;
     // index of the corresponding output in said transaction

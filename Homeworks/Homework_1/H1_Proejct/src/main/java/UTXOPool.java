@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class UTXOPool {
-
     // the current collection of UTXOs, with each one
     // mapped to its corresponding transaction output
     private HashMap<UTXO, Transaction.Output> H;
@@ -61,7 +60,7 @@ public class UTXOPool {
     }
 
     /**
-     * @return  an {@code ArrayList} of all UTXOs in the pool
+     * @return an {@code ArrayList} of all UTXOs in the pool
      */
     public ArrayList<UTXO> getAllUTXO() {
         Set<UTXO> setUTXO = H.keySet();

@@ -91,9 +91,9 @@ In this part, i will describe 2 detailed things:
 - The **impementation of TxHandler class**, which contains 3 methods: `TxHandler()`, `isValidTx()`, and `handleTxs()`. 
 - The **test suite** to verify the implementation.
 
-### the idea of the implementation
+### idea of the implementation
 
-**(1) `TxHandler(UTXOPool utxoPool)`**
+**1. `TxHandler(UTXOPool utxoPool)`**
 
 - This method is used to create a public ledger whose current UTXOPool is `utxoPool`.
 - In order to make a defensive copy of `utxoPool`, I use the `new UTXOPool(UTXOPool uPool)` constructor.
@@ -104,19 +104,86 @@ public TxHandler(UTXOPool utxoPool) {
 }
 ```
 
-**(2) `isValidTx(Transaction tx)`**
+**2. ` boolean isValidTx(Transaction tx)`**
 
 - This method is used to verify the validity of the given transaction.
 
-- It returns `true` only if the transaction meets the following **five conditions**:
+- It returns `true` only if the transaction meets the following 5 conditions:
 
-  - (1) **all outputs** claimed by `tx` are in the current UTXO pool
+  - **(1) All outputs claimed by `tx` are in the current UTXO pool.**
 
-    
+    This condition makes sure that **all the inputs of the transaction are generated from past transactions' outputs.** To implement this, I go through all the inputs of the transaction, and check if the utxoPool (create from `TxHandler()`) contains the current input's utxo.
 
-  - (2)
+    ```java
+    // (1) verify if all outputs claimed by tx are in the current UTXO pool
+    if (!utxoPool.contains(curUTXO)) {
+        System.out.println("ERROR (1): The output is not in the current UTXO pool !!");
+        return false;
+    }
+    ```
 
-### the idea of the test suite
+  - **(2) The signatures on each input of tx are valid.**
+
+    This condition makes sure that **people who paid the money is the money's owner**. To implement this, I go through all the inputs of the transaction and check if all the inputs' `publickey`, `message` and `signature` can match.
+
+    ```java
+    // (2) verify signature on each input of tx are valid
+    if (!Crypto.verifySignature(preOutput.address, tx.getRawDataToSign(i), curInput.signature)) {
+        System.out.println("ERROR (2): The input's signature is invalid !!");
+        return false;
+    }
+    ```
+
+  - **(3) No UTXO is claimed multiple times by tx.**
+
+    This condition makes sure that **there is no double spending in the given transaction**. To implement this, for a certain input, I go through all the inputs after it to see if there is any input using the same UTXO with it.
+
+    ```java
+    // (3) ensure no UTXO is claimed multiple times by tx
+    if (spentUTXOs.contains(curUTXO)) {
+        System.out.println("ERROR (3): Multiple claim of one UTXO !!");
+        return false;
+    } else {
+            spentUTXOs.add(curUTXO);
+    }
+    ```
+
+  - **(4) All of tx's output values are non-negative.**
+
+    This condition is easy to understand **because nobody will spend negative value of money**. To implement this, I go through all the outputs and check if their output value is non-negative.
+
+    ```java
+    // (4) ensure all of tx's output values are non-negative
+    if (tx.getOutput(o).value < 0) {
+        System.out.println("ERROR (4): The output's value is negative !!");
+        return false;
+    }
+    ```
+
+  - **(5) The sum of tx's input values is greater than or equal to the sum of its output values.**
+
+    This condition is also easy to understand because except coinbase transaction, **no paycoins transactions will have the output values larger than the input values**. To implement this, I go through all the outputs and outpus, and sum the values of inputs and outputs respectively. 
+
+    ```java
+    // (5) ensure the sum of tx's input values is greater than or equal to the sum of its output values
+    if (inputsTotalValues < outputsTotalValues) {
+        System.out.println("ERROR (5): inputsTotalValues < outputsTotalValues !!");
+        return false;
+    }
+    ```
+
+**3. `Transaction[] handleTxs(Transaction[] possibleTxs)`**
+
+- Given an **unordered** array of proposed transactions, this method can check each transaction for correctness and then return a mutually valid array of accepted transactions, updating the current UTXO pool as well.
+- Considering the input array is unorder, **some transactions may be valid due to other transactions' confirmation**. So I go through all the transactions **over and over again until no valid transactions can be found**. If there are valid transactions, update the utxopool. This could be kind of inefficient, but it can make sure there won't be any mistake!
+- To implement this, I divide it into three steps:
+  - **Step 1.** Go through all the transactions over and over again and record whether have new valid transaction or not. 
+  - **Step 2.** Check the validity of each transaction using `isValidTx()`. If it is valid, add it into the `acceptedTxs` and update the `UTXOPool`: add new valid output & delete the spent utxo.
+  - **Step 3.** If there is no new valid transactions can be found, stop going through all the transactions. The list  `acceptedTxs` is what we need!
+
+
+
+### idea of the test suite
 
 
 

@@ -15,7 +15,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 
 public class Transaction {
-
     public class Input {
         // hash of the Transaction whose output is being used
         public byte[] prevTxHash;

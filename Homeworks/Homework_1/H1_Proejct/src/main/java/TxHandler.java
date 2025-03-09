@@ -7,10 +7,8 @@
 package main.java;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class TxHandler {
-
     // define the private utxoPool
     private UTXOPool utxoPool;
 
@@ -26,8 +24,8 @@ public class TxHandler {
     /**
      * @return true if
      * (1) all outputs claimed by {@code tx} are in the current UTXO pool,
-     * (2) the signatures on each input of tx are valid,
-     * (3) no UTXO is claimed multiple times by tx,
+     * (2) the signatures on each input of {@code tx} are valid,
+     * (3) no UTXO is claimed multiple times by {@code tx},
      * (4) all of {@code tx}'s output values are non-negative, and
      * (5) the sum of {@code tx}'s input values is greater than or equal to the sum of
      * its output values; and false otherwise.
@@ -48,10 +46,10 @@ public class TxHandler {
         for (int i = 0; i < tx.numInputs(); i++) {
             // get and define the current input, utxo and the corresponding previous output
             Transaction.Input curInput = tx.getInput(i);
-            UTXO curUTXO = new UTXO(curInput.prevTxHash, curInput.outputIndex);
-            Transaction.Output preOutput = utxoPool.getTxOutput(curUTXO);
+            UTXO curUtxo = new UTXO(curInput.prevTxHash, curInput.outputIndex);
+            Transaction.Output preOutput = utxoPool.getTxOutput(curUtxo);
             // (1) verify if all outputs claimed by tx are in the current UTXO pool
-            if (!utxoPool.contains(curUTXO)) {
+            if (!utxoPool.contains(curUtxo)) {
                 System.out.println("ERROR (1): The output is not in the current UTXO pool !!");
                 return false;
             }
@@ -61,11 +59,11 @@ public class TxHandler {
                 return false;
             }
             // (3) ensure no UTXO is claimed multiple times by tx
-            if (spentUTXOs.contains(curUTXO)) {
+            if (spentUTXOs.contains(curUtxo)) {
                 System.out.println("ERROR (3): Multiple claim of one UTXO !!");
                 return false;
             } else {
-                spentUTXOs.add(curUTXO);
+                spentUTXOs.add(curUtxo);
             }
             // used for (5), record the total values of input by the preOutput
             inputsTotalValues += preOutput.value;
@@ -95,4 +93,50 @@ public class TxHandler {
         return true;
     }
 
+    /**
+     * Handles each epoch by receiving an unordered array of proposed
+     * transactions, checking each transaction for correctness,
+     * returning a mutually valid array of accepted transactions,
+     * and updating the current UTXO pool as appropriate.
+     */
+    public Transaction[] handleTxs(Transaction[] possibleTxs) {
+        // define the accepted transactions array
+        ArrayList<Transaction> acceptedTxs = new ArrayList<>();
+
+        // go through over and over again, until can't find the valid transaction
+        while (true) {
+            // the flag to detect whether it finds valid transaction in going through or not
+            boolean findValidTxFlag = false;
+            // go through possibleTxs
+            for (Transaction tx : possibleTxs) {
+                if (acceptedTxs.contains(tx)) {
+                    continue;
+                } else {
+                    if (isValidTx(tx)) {
+                        // find the valid transaction add to the array and change the flag
+                        acceptedTxs.add(tx);
+                        findValidTxFlag = true;
+                        // update utxoPool: add new valid output to utxoPool
+                        for (int o = 0; o < tx.numOutputs(); o++) {
+                            Transaction.Output output = tx.getOutput(o);
+                            UTXO utxo = new UTXO(tx.getHash(), o);
+                            utxoPool.addUTXO(utxo, output);
+                        }
+                        // update utxoPool: remove spent valid input from utxoPool
+                        for (int i = 0; i < tx.numInputs(); i++) {
+                            Transaction.Input input = tx.getInput(i);
+                            UTXO utxo = new UTXO(input.prevTxHash, input.outputIndex);
+                            utxoPool.removeUTXO(utxo);
+                        }
+                    }
+                }
+            }
+            // there is no valid transaction left, just break.
+            if (!findValidTxFlag)
+                break;
+        }
+
+        // transfer the ArrayList<Transaction> to Transaction[]
+        return acceptedTxs.toArray(new Transaction[acceptedTxs.size()]);
+    }
 }
