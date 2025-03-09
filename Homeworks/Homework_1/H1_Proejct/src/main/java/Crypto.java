@@ -1,7 +1,7 @@
 /**
  * @Time : 2025/3/8 16:46
  * @Author : http://bitcoinbook.cs.princeton.edu/.
- * @Comment: The
+ * @Comment: The Crypto class for verifying the Signature.
  **/
 
 package main.java;
