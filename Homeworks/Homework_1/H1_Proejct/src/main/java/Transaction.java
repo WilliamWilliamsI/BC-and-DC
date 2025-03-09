@@ -1,9 +1,11 @@
-package main.java; /**
+/**
  * @Time : 2025/3/8 12:27
  * @Author : http://bitcoinbook.cs.princeton.edu/.
- * @Comment: A main.java.Transaction class that represents a ScroogeCoin transaction and has inner
- * classes main.java.Transaction.Output and main.java.Transaction.Input.
+ * @Comment: A Transaction class that represents a ScroogeCoin transaction and has inner
+ * classes Transaction.Output and Transaction.Input.
  **/
+
+package main.java;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ import java.security.PublicKey;
 public class Transaction {
 
     public class Input {
-        // hash of the main.java.Transaction whose output is being used
+        // hash of the Transaction whose output is being used
         public byte[] prevTxHash;
         // used output's index in the previous transaction
         public int outputIndex;
@@ -113,12 +115,10 @@ public class Transaction {
             for (int i = 0; i < addressBytes.length; i++)
                 sigData.add(addressBytes[i]);
         }
-
         byte[] sigD = new byte[sigData.size()];
         int i = 0;
         for (Byte sb : sigData)
             sigD[i++] = sb;
-
         return sigD;
     }
 

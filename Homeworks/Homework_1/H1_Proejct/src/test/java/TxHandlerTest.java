@@ -20,13 +20,13 @@ public class TxHandlerTest {
             Signature signature = Signature.getInstance("SHA256withRSA");
             signature.initSign(sk);
             signature.update(this.getRawDataToSign(index));
-            //Add the signature to the transaction.
+            // Add the signature to the transaction.
             this.addSignature(signature.sign(), index);
             this.finalize();
         }
     }
 
     public static void main(String[] args) {
-        System.out.printf("Testing TxHandler\n");
+        System.out.print("Testing TxHandler\n");
     }
 }
