@@ -100,7 +100,6 @@ public class Transaction {
         ByteBuffer b = ByteBuffer.allocate(Integer.SIZE / 8);
         b.putInt(in.outputIndex);
         byte[] outputIndex = b.array();
-
         if (prevTxHash != null) for (int i = 0; i < prevTxHash.length; i++)
             sigData.add(prevTxHash[i]);
         for (int i = 0; i < outputIndex.length; i++)

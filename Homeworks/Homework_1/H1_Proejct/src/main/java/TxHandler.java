@@ -7,6 +7,92 @@
 package main.java;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TxHandler {
+
+    // define the private utxoPool
+    private UTXOPool utxoPool;
+
+    /**
+     * Creates a public ledger whose current UTXOPool (collection of unspent
+     * transaction outputs) is {@code utxoPool}. This should make a defensive copy of
+     * utxoPool by using the UTXOPool(UTXOPool uPool) constructor.
+     */
+    public TxHandler(UTXOPool utxoPool) {
+        this.utxoPool = new UTXOPool(utxoPool);
+    }
+
+    /**
+     * @return true if
+     * (1) all outputs claimed by {@code tx} are in the current UTXO pool,
+     * (2) the signatures on each input of tx are valid,
+     * (3) no UTXO is claimed multiple times by tx,
+     * (4) all of {@code tx}'s output values are non-negative, and
+     * (5) the sum of {@code tx}'s input values is greater than or equal to the sum of
+     * its output values; and false otherwise.
+     */
+    public boolean isValidTx(Transaction tx) {
+        // (0) check whether tx is null or not
+        if (tx == null)
+            return false;
+
+        // define the sum of tx's input values and the sum of its output values
+        double inputsTotalValues = 0.;
+        double outputsTotalValues = 0.;
+
+        // the spentUTXOs is used to record the UTXO has been used
+        ArrayList<UTXO> spentUTXOs = new ArrayList<UTXO>();
+
+        // go through all tx's inputs to check (1), (2) and (3) while preparing (5)
+        for (int i = 0; i < tx.numInputs(); i++) {
+            // get and define the current input, utxo and the corresponding previous output
+            Transaction.Input curInput = tx.getInput(i);
+            UTXO curUTXO = new UTXO(curInput.prevTxHash, curInput.outputIndex);
+            Transaction.Output preOutput = utxoPool.getTxOutput(curUTXO);
+            // (1) verify if all outputs claimed by tx are in the current UTXO pool
+            if (!utxoPool.contains(curUTXO)) {
+                System.out.println("ERROR (1): The output is not in the current UTXO pool !!");
+                return false;
+            }
+            // (2) verify signature on each input of tx are valid
+            if (!Crypto.verifySignature(preOutput.address, tx.getRawDataToSign(i), curInput.signature)) {
+                System.out.println("ERROR (2): The input's signature is invalid !!");
+                return false;
+            }
+            // (3) ensure no UTXO is claimed multiple times by tx
+            if (spentUTXOs.contains(curUTXO)) {
+                System.out.println("ERROR (3): Multiple claim of one UTXO !!");
+                return false;
+            } else {
+                spentUTXOs.add(curUTXO);
+            }
+            // used for (5), record the total values of input by the preOutput
+            inputsTotalValues += preOutput.value;
+        }
+
+        // go through all tx's outputs to check (4), while preparing for (5)
+        for (int o = 0; o < tx.numOutputs(); o++) {
+            // get the current output, utxo and the corresponding previous output
+            Transaction.Output curOutput = tx.getOutput(o);
+            // (4) ensure all of tx's output values are non-negative
+            if (tx.getOutput(o).value < 0) {
+                System.out.println("ERROR (4): The output's value is negative !!");
+                return false;
+            }
+            // used for (5), record the total values of output
+            outputsTotalValues += curOutput.value;
+        }
+
+        // (5) ensure the sum of tx's input values is greater than or equal to the sum of its output values
+        if (inputsTotalValues < outputsTotalValues) {
+            System.out.println("ERROR (5): inputsTotalValues < outputsTotalValues !!");
+            return false;
+        }
+
+        // all 5 conditions of verifying are passed !
+        System.out.println("This transaction has been verified, it's OK !!");
+        return true;
+    }
+
 }

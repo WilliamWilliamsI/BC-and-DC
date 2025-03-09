@@ -84,7 +84,39 @@ public class TxHandler {
 
 
 
-## Implementation
+## Implementation & Test
+
+In this part, i will describe 2 detailed things:
+
+- The **impementation of TxHandler class**, which contains 3 methods: `TxHandler()`, `isValidTx()`, and `handleTxs()`. 
+- The **test suite** to verify the implementation.
+
+### the idea of the implementation
+
+**(1) `TxHandler(UTXOPool utxoPool)`**
+
+- This method is used to create a public ledger whose current UTXOPool is `utxoPool`.
+- In order to make a defensive copy of `utxoPool`, I use the `new UTXOPool(UTXOPool uPool)` constructor.
+
+```java
+public TxHandler(UTXOPool utxoPool) {
+    this.utxoPool = new UTXOPool(utxoPool);
+}
+```
+
+**(2) `isValidTx(Transaction tx)`**
+
+- This method is used to verify the validity of the given transaction.
+
+- It returns `true` only if the transaction meets the following **five conditions**:
+
+  - (1) **all outputs** claimed by `tx` are in the current UTXO pool
+
+    
+
+  - (2)
+
+### the idea of the test suite
 
 
 
@@ -92,7 +124,7 @@ public class TxHandler {
 
 ## Environment
 
-Because JDK versions are updated so quickly, there are a lot of things in the old code that will be wrong in the new JDK version, such as the `finalize()` function. It is highly recommended to **install Java 8 instead of the latest version of the JDK**. 
+:e-mail: Because JDK versions are updated so quickly, there are a lot of things in the old code that will be wrong in the new JDK version, such as the `finalize()` function. It is highly recommended to **install Java 8 instead of the latest version of the JDK**. 
 
 :star2: **All of the code in this repo is run on the MacOS (M2) with JDK1.8 and [junit-4.13.2](https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar)**.
 
@@ -107,5 +139,5 @@ There are 2 high quality open-sourced codes we can refer to. Thanks for the sibl
 - [**JiZhong Cao**](https://github.com/1901212561/PHBS_BlockChain_2019/)
 - [**TingWei Shen**](https://github.com/SnakeWayne/PHBS_BlockChain_2019)
 
-:warning: In addition to these direct references, the framing of background content is critical, and further study of the [references cited by the instructor](https://zhuanlan.zhihu.com/p/121039362) in class can be done here.
+:warning: In addition to these direct references, the framing of background content is critical, and further study of the [**references cited by the instructor**](https://zhuanlan.zhihu.com/p/121039362) in class can be done here.
 
