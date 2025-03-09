@@ -89,7 +89,7 @@ public class TxHandler {
 
 The runnable result code is in [`TxHandler.java`]( ./src/main/java/TxHandler.java) ) and [`TxHandleTest.java`]( src/test/java/TxHandlerTest.java ). In this section, I will elaborate on the class **implementation** and **test** code writing logic:
 
-- The **impementation of TxHandler class**, which contains 3 methods: `TxHandler()`, `isValidTx()`, and `handleTxs()`. 
+- The **implementation of TxHandler class**, which contains 3 methods: `TxHandler()`, `isValidTx()`, and `handleTxs()`. 
 - The **test suite** to verify the implementation.
 
 ### Details of the implementation

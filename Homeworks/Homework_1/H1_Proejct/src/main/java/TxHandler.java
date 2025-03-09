@@ -1,7 +1,8 @@
 /**
  * @Time : 2025/3/8 17:03
  * @Author : Karry Ren
- * @Comment:
+ * @Comment:T he implementation of TxHandler class,
+ * which contains 3 methods: TxHandler(), isValidTx(), and handleTxs().
  **/
 
 package main.java;
