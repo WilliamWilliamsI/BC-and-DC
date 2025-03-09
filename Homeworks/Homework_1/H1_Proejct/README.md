@@ -20,7 +20,7 @@ H1_Proejct/
 
 
 
-## Overview & Analysis
+## 1. Overview & Analysis
 
 :pencil: The detailed requirements of homework 1 are in the `docs/Homework_1.pdf`:
 
@@ -85,16 +85,16 @@ public class TxHandler {
 
 
 
-## Implementation & Test
+## 2. Implementation & Test
 
 The runnable result code is in [`TxHandler.java`]( ./src/main/java/TxHandler.java) and [`TxHandleTest.java`]( src/test/java/TxHandlerTest.java ). In this section, I will elaborate on the class **implementation** and **test** code writing logic:
 
 - The **implementation of TxHandler class**, which contains 3 methods: `TxHandler()`, `isValidTx()`, and `handleTxs()`. 
 - The **test suite** to verify the implementation.
 
-### Details of the implementation
+### 2.1 Details of the implementation
 
-**1. `TxHandler(UTXOPool utxoPool)`**
+**Part 1. `TxHandler(UTXOPool utxoPool)`**
 
 - This method is used to create a public ledger whose current UTXOPool is `utxoPool`.
 - In order to make a defensive copy of `utxoPool`, I use the `new UTXOPool(UTXOPool uPool)` constructor.
@@ -105,7 +105,7 @@ public TxHandler(UTXOPool utxoPool) {
 }
 ```
 
-**2. ` boolean isValidTx(Transaction tx)`**
+**Part 2.` boolean isValidTx(Transaction tx)`**
 
 - This method is used to verify the validity of the given transaction.
 
@@ -173,7 +173,7 @@ public TxHandler(UTXOPool utxoPool) {
     }
     ```
 
-**3. `Transaction[] handleTxs(Transaction[] possibleTxs)`**
+**Part 3. `Transaction[] handleTxs(Transaction[] possibleTxs)`**
 
 - Given an **unordered** array of proposed transactions, this method can check each transaction for correctness and then return a mutually valid array of accepted transactions, updating the current UTXO pool as well.
 - Considering the input array is unorder, **some transactions may be valid due to other transactions' confirmation**. So I go through all the transactions **over and over again until no valid transactions can be found**. If there are valid transactions, update the utxopool. This could be kind of inefficient, but it can make sure there won't be any mistake!
@@ -193,13 +193,13 @@ public TxHandler(UTXOPool utxoPool) {
 
 <center>Figure 1. The example of transactions.</center>
 
-### Details of the test suite
+### 2.2 Details of the test suite
 
 
 
 
 
-## Environment
+## 3. Environment
 
 :e-mail: Because JDK versions are updated so quickly, there are a lot of things in the old code that will be wrong in the new JDK version, such as the `finalize()` function. It is highly recommended to **install Java 8 instead of the latest version of the JDK**. 
 
