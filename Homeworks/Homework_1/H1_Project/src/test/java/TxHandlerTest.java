@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 public class TxHandlerTest {
     // some needed private attributes
     private KeyPair kScrooge, kAlice, kBob;
-    private TxHandlerTest.TX tx0, tx1, tx2, tx3, tx4, tx5, tx6, tx7, tx8, tx9;
+    private TX tx0, tx1, tx2, tx3, tx4, tx5, tx6, tx7, tx8, tx9;
     private TxHandler txHandler;
 
     /**
@@ -70,7 +70,7 @@ public class TxHandlerTest {
 
         // Pay coins transactions 1: [ Scrooge -> Alice<values=9>, Scrooge -> Scrooge<values=1> ],
         // which is RIGHT.
-        tx1 = new TxHandlerTest.TX();
+        tx1 = new TX();
         kAlice = KeyPairGenerator.getInstance("RSA").generateKeyPair();
         tx1.addInput(tx0.getHash(), 0);
         tx1.addOutput(9, kAlice.getPublic());
@@ -79,7 +79,7 @@ public class TxHandlerTest {
 
         // Pay coins transactions 2: [ Alice -> Bob<values=5>, Alice -> Alice<values=4> ]
         // which is RIGHT, need tx1 -> tx2.
-        tx2 = new TxHandlerTest.TX();
+        tx2 = new TX();
         kBob = KeyPairGenerator.getInstance("RSA").generateKeyPair();
         tx2.addInput(tx1.getHash(), 0);
         tx2.addOutput(5, kBob.getPublic());
@@ -88,14 +88,14 @@ public class TxHandlerTest {
 
         // Pay coins transactions 3: [ Alice -> Scrooge<values=9> ],
         // but with the WRONG input index.
-        tx3 = new TxHandlerTest.TX();
+        tx3 = new TX();
         tx3.addInput(tx1.getHash(), 2); // should be 0 here, if 1 signature is error
         tx3.addOutput(9, kScrooge.getPublic());
         tx3.signTX(kAlice.getPrivate(), 0);
 
         // Pay coins transactions 4: [ Alice -> Bob amount<values=3>, Alice -> Alice<value=6> ],
         // but with WRONG signature.
-        tx4 = new TxHandlerTest.TX();
+        tx4 = new TX();
         tx4.addInput(tx1.getHash(), 0);
         tx4.addOutput(3, kBob.getPublic());
         tx4.addOutput(6, kAlice.getPublic());
@@ -103,7 +103,7 @@ public class TxHandlerTest {
 
         // Pay coins transactions 5: [ Alice -> Bob<values=9>, Alice -> Scrooge<values=9>],
         // double spending WRONG !!
-        tx5 = new TxHandlerTest.TX();
+        tx5 = new TX();
         tx5.addInput(tx1.getHash(), 0);
         tx5.addInput(tx1.getHash(), 0);
         tx5.addOutput(9, kBob.getPublic());
@@ -113,7 +113,7 @@ public class TxHandlerTest {
 
         // Pay coins transactions 6: [ Bob -> Alice<values=-3>, Bob -> Scrooge<values=8> ],
         // WRONG due to the negative values, need tx1 -> tx2 -> tx6
-        tx6 = new TxHandlerTest.TX();
+        tx6 = new TX();
         tx6.addInput(tx2.getHash(), 0);
         tx6.addOutput(-3, kAlice.getPublic());
         tx6.addOutput(6, kScrooge.getPublic());
@@ -121,7 +121,7 @@ public class TxHandlerTest {
 
         // Pay coins transactions 7: [ Bob -> Alice<values=4>, Bob -> Scrooge<values=4>],
         // WRONG due to sum of input values < sum of output values, need tx1 -> tx2 -> tx7
-        tx7 = new TxHandlerTest.TX();
+        tx7 = new TX();
         tx7.addInput(tx2.getHash(), 0);
         tx7.addOutput(4, kAlice.getPublic());
         tx7.addOutput(4, kScrooge.getPublic());
@@ -129,14 +129,14 @@ public class TxHandlerTest {
 
         // Pay coins transactions 8: [ Alice -> Bob<values=9> ]
         // which is RIGHT, need tx1 -> tx8.
-        tx8 = new TxHandlerTest.TX();
+        tx8 = new TX();
         tx8.addInput(tx1.getHash(), 0);
         tx8.addOutput(9, kBob.getPublic());
         tx8.signTX(kAlice.getPrivate(), 0);
 
         // Pay coins transactions 9: [ Bob -> Scrooge<values=9> ]
         // which is RIGHT, need tx1 -> tx8 -> tx9.
-        tx9 = new TxHandlerTest.TX();
+        tx9 = new TX();
         tx9.addInput(tx8.getHash(), 0);
         tx9.addOutput(9, kScrooge.getPublic());
         tx9.signTX(kBob.getPrivate(), 0);
