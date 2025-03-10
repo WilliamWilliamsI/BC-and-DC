@@ -51,17 +51,17 @@ public class TxHandler {
             Transaction.Output preOutput = utxoPool.getTxOutput(curUtxo);
             // (1) verify if all outputs claimed by tx are in the current UTXO pool
             if (!utxoPool.contains(curUtxo)) {
-                System.out.println("ERROR (1): The output is not in the current UTXO pool !!");
+//                System.out.println("ERROR (1): The output is not in the current UTXO pool !!");
                 return false;
             }
             // (2) verify signature on each input of tx are valid
             if (!Crypto.verifySignature(preOutput.address, tx.getRawDataToSign(i), curInput.signature)) {
-                System.out.println("ERROR (2): The input's signature is invalid !!");
+//                System.out.println("ERROR (2): The input's signature is invalid !!");
                 return false;
             }
             // (3) ensure no UTXO is claimed multiple times by tx
             if (spentUTXOs.contains(curUtxo)) {
-                System.out.println("ERROR (3): Multiple claim of one UTXO !!");
+//                System.out.println("ERROR (3): Multiple claim of one UTXO !!");
                 return false;
             } else {
                 spentUTXOs.add(curUtxo);
@@ -76,7 +76,7 @@ public class TxHandler {
             Transaction.Output curOutput = tx.getOutput(o);
             // (4) ensure all of tx's output values are non-negative
             if (tx.getOutput(o).value < 0) {
-                System.out.println("ERROR (4): The output's value is negative !!");
+//                System.out.println("ERROR (4): The output's value is negative !!");
                 return false;
             }
             // used for (5), record the total values of output
@@ -85,7 +85,7 @@ public class TxHandler {
 
         // (5) ensure the sum of tx's input values is greater than or equal to the sum of its output values
         if (inputsTotalValues < outputsTotalValues) {
-            System.out.println("ERROR (5): outputsTotalValues > inputsTotalValues !!");
+//            System.out.println("ERROR (5): outputsTotalValues > inputsTotalValues !!");
             return false;
         }
 

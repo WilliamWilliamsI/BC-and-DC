@@ -25,4 +25,3 @@ jobs:
           cd Homeworks/Homework_1/H1_Project/
           mvn -B test
           cd ../../../
-          pwd
