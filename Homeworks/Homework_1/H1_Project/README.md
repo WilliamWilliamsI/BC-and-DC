@@ -14,6 +14,7 @@ H1_Proejct/
         └── TxHandler.java
     ├── test.java/ # The test classes.
         └── TxHandlerTest.java 
+├── pom.xml # The settings of Maven for CI (in GitHub Action).
 └── .gitignore # The gitignore file.
 ```
 
