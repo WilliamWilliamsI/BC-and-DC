@@ -4,7 +4,6 @@
 H1_Proejct/
 ├── docs/
     ├── Homework_1.pdf # The need of homework 1.
-    ├── Homework_1.docx # The report of homework 1.
     └── Images.pptx # The images of homework 1.
 ├── src/ # The source codes (code framework is following the maven framework).
     ├── main.java/ # The main classes.
@@ -14,7 +13,7 @@ H1_Proejct/
         ├── UTXOPool.java
         └── TxHandler.java
     ├── test.java/ # The test classes.
-    
+        └──  
 └── .gitignore # The gitignore file.
 ```
 
@@ -206,6 +205,8 @@ Here, a **full range of black-box tests** need to be performed on the three func
 
 <center>Figure 2. The transaction relationship for testing.</center>
 
+
+
 **Tests for the `isValidTx()` function**
 
 In order to present the testing process more clearly, I have made the test form here.
@@ -224,7 +225,23 @@ Note that all the testing data with certain deficiencies can become the valid tr
 
 **Tests for the `handleTxs()` function**
 
+In order to present the testing process more clearly, I have made the test form here.
 
+| Test Function                     | Test Purpose                                                 | Data for testing                                             | Expected Result   | Actual Result     |
+| --------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ----------------- | ----------------- |
+| `test_handle_unordered_txs()`     | Test for an unordered array of proposed transactions (some are valid, and some are invalid). | `{tx3, tx4, tx5, tx6, tx7, tx2, tx1}`                        | `{tx1, tx2}`      | `{tx1, tx2}`      |
+| `test_handle_unordered_txs_ds1()` | Test the first situation of double spending in different txs. | `{tx2, tx8, tx9, tx1}`, where `tx2` and `tx8` are double-spending | `{tx1, tx2}`      | `{tx1, tx2}`      |
+| `test_handle_unordered_txs_ds2`   | Test the second situation of double spending in different txs. | `{tx8, tx2, tx9, tx1}`, where `tx2` and `tx8` are double-spending | `{tx1, tx8, tx9}` | `{tx1, tx8, tx9}` |
+
+I strongly recommend that you refer to Figure 2. for the observations made here!
+
+:100: **Test results in my environment**
+
+In my environment (details of which are described below), **all of the above 10 test functions passed**, as shown in Figure 3.
+
+<img src="./docs/imgs/idea_test_results.png" alt="idea_test_results " style="zoom:25%;" />
+
+<center>Figure 3. The test results in my environment.</center>
 
 
 

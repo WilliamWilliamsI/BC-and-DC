@@ -152,6 +152,7 @@ public class TxHandlerTest {
      * (3) no UTXO is claimed multiple times by {@code tx},
      * (4) all of {@code tx}'s output values are non-negative, and
      * (5) the sum of {@code tx}'s input values is greater than or equal to the sum of output values
+     * <p>
      * 2. Test Strategy:
      * Violate each rule to each function and test the results one by one.
      * ------------------------------------------------------------------------------------------------------- *
@@ -226,4 +227,41 @@ public class TxHandlerTest {
         assertFalse(txHandler.isValidTx(tx7));
     }
 
+    /**
+     * -------------------------------------- handleTxs() Test -------------------------------------- *
+     * 1. Function Introduction:
+     * The function is used to handle an unordered array of proposed transactions.
+     * It returns a mutually valid array of accepted transactions.
+     * <p>
+     * 2. Test Strategy:
+     * Given an unordered array of proposed transactions to see if they can be handled follow the rules.
+     * Check the additional assumption for the double spending in different txs.
+     * ---------------------------------------------------------------------------------------------- *
+     */
+
+    @Test
+    public void test_handle_unordered_txs() {
+        // given an unordered array of proposed transactions (some are valid, some are not)
+        Transaction[] unorderedTxs = new Transaction[]{tx3, tx4, tx5, tx6, tx7, tx2, tx1};
+        Transaction[] acceptedTxs = new Transaction[]{tx1, tx2};
+        assertArrayEquals(acceptedTxs, txHandler.handleTxs(unorderedTxs));
+    }
+
+    @Test
+    public void test_handle_unordered_txs_ds1() {
+        // the first situation of double spending in different txs
+        // if tx2 is in front of the tx8, then tx1 -> tx2 should be accepted
+        Transaction[] unorderedTxs = new Transaction[]{tx2, tx8, tx9, tx1};
+        Transaction[] acceptedTxs = new Transaction[]{tx1, tx2};
+        assertArrayEquals(acceptedTxs, txHandler.handleTxs(unorderedTxs));
+    }
+
+    @Test
+    public void test_handle_unordered_txs_ds2() {
+        // the second situation of double spending in different txs
+        // if tx2 is in behind of the tx8, then tx1 -> tx8 -> tx9 should be accepted
+        Transaction[] unorderedTxs = new Transaction[]{tx8, tx2, tx9, tx1};
+        Transaction[] acceptedTxs = new Transaction[]{tx1, tx8, tx9};
+        assertArrayEquals(acceptedTxs, txHandler.handleTxs(unorderedTxs));
+    }
 }
