@@ -24,8 +24,8 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>Homeworks/Homework_1/H1_Project/src/main/java</sourceDirectory>
-        <testSourceDirectory>Homeworks/Homework_1/H1_Project/src/test/java</testSourceDirectory>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
