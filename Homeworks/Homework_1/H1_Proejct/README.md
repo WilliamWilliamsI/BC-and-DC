@@ -13,7 +13,7 @@ H1_Proejct/
         ├── UTXOPool.java
         └── TxHandler.java
     ├── test.java/ # The test classes.
-        └──  
+        └── TxHandlerTest.java 
 └── .gitignore # The gitignore file.
 ```
 
