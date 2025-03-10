@@ -20,5 +20,5 @@ jobs:
           distribution: "temurin"
           architecture: x64
 
-      - name: Build with Maven
-        run: mvn -B test --file pom.xml
+      - name: Build with Maven to Test Homeworks/Homework_1/H1_Project
+        run: mvn -B test --file Homeworks/Homework_1/H1_Project/pom.xml
