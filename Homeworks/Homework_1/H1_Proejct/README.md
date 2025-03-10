@@ -34,7 +34,7 @@ This is a cryptocurrency trading process that matches what was taught in class. 
 - ***Transaction***: Represents a ScroogeCoin transaction and has inner classes `Transaction.Output` and `Transaction.Input`. 
   - Consists of **a list of inputs**, which have a **value** and a **public key** to which it is being paid. 
   - Consists of **a list of outputs**,  which have the **hash of the transaction that contains the corresponding output**, the **index** of this output in that transaction, and a **digital signature**. The **raw data that is signed** is obtained from the `getRawDataToSign(int index)` method.
-  - Consists of a **unique ID** (see the getRawTx() method).
+  - Consists of a **unique ID** (see the `getRawTx()` method).
   - Contains methods to **add and remove an input**, **add an output**, **compute digests** to sign/hash, add a signature to an input, and **compute and store the hash** of the transaction once all inputs/outputs/signatures have been added.
 - ***Crypto***: Verifies a signature, using the `verifySignature()` method.
 - ***UTXO***: Represents an **unspent transaction output**. 
@@ -80,7 +80,7 @@ public class TxHandler {
 :gear: More detailed requirements:
 
 - The implementation of `handleTxs()` should return a mutually valid transaction **set of maximal size** (one that **can’t be enlarged simply by adding** more transactions). It need not compute a set of maximum size (one for which there is no larger mutually valid transaction set).
-- Based on the transactions it has chosen to accept, `handleTxs()` should also **update its internal `UTXOPool`** to reflect the current set of unspent transaction outputs, so that future calls to `handleTxs() `and `isValidTx()` are able to correctly process/validate transactions that claim outputs from transactions that were accepted in a previous call to `handleTxs()`.
+- Based on the transactions it has chosen to accept, `handleTxs()` should also **update its internal `UTXOPool`** to reflect the current set of unspent transaction outputs, so that future calls to `handleTxs() ` and `isValidTx()` are able to correctly process/validate transactions that claim outputs from transactions that were accepted in a previous call to `handleTxs()`.
 
 
 
@@ -104,7 +104,7 @@ public TxHandler(UTXOPool utxoPool) {
 }
 ```
 
-**Part 2.` boolean isValidTx(Transaction tx)`**
+**Part 2. ` boolean isValidTx(Transaction tx)`**
 
 - This method is used to verify the validity of the given transaction.
 
@@ -112,7 +112,7 @@ public TxHandler(UTXOPool utxoPool) {
 
   - **(1) All outputs claimed by `tx` are in the current UTXO pool.**
 
-    This condition makes sure that **all the inputs of the transaction are generated from past transactions' outputs.** To implement this, I go through all the inputs of the transaction, and check if the utxoPool (create from `TxHandler()`) contains the current input's utxo.
+    This condition makes sure that **all the inputs of the transaction are generated from past transactions' outputs.** To implement this, I go through all the inputs of the transaction, and check if the utxoPool (created from `TxHandler()`) contains the current input's utxo.
 
     ```java
     // (1) verify if all outputs claimed by tx are in the current UTXO pool
@@ -196,10 +196,10 @@ public TxHandler(UTXOPool utxoPool) {
 
 Here, a **full range of black-box tests** need to be performed on the three functions implemented above. Simulating a real transaction between Scrooge, Alice and Bob will be very helpful for testing the functionality. To make things easier, some preparatory work has been done before completing the tests in turn.
 
-**Some preparations for tests `@Before`.**
+**Some preparations for tests `@Before`**
 
 - The original Transaction class did not have a function to sign, which means that it is a question of **where the signature in Input comes from**. Here, the `signTX()` function is added according to the `verifySignature()`method.
-- I create the coinbase transaction `tx0` and initialize the `UTXOPool`. I also create other 9 translations (from `tx1` to `tx9`) **between Alice and Bob**. Some of them are correct while others are incorrect. The specific input-output relationships are shown in Figure 2.
+- I create the coinbase transaction `tx0` and initialize the `UTXOPool`. I also create other 9 translations (from `tx1` to `tx9`) **between Alice, Bob and Scrooge**. Some of them are correct while others are incorrect. The specific input-output relationships are shown in Figure 2.
 
 <img src="./docs/imgs/test_txs.png" alt="test_txs " style="zoom:5%;" />
 
@@ -209,7 +209,7 @@ Here, a **full range of black-box tests** need to be performed on the three func
 
 **Tests for the `isValidTx()` function**
 
-In order to present the testing process more clearly, I have made the test form here.
+In order to present the testing process more clearly, I have made the test table form here.
 
 | Test Function                                  | Test Purpose                                                 | Data for testing                                             | Expected Result             | Actual Result               |
 | ---------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | --------------------------- | --------------------------- |
@@ -249,7 +249,7 @@ In my environment (details of which are described below), **all of the above 10 
 
 :e-mail: Because JDK versions are updated so quickly, there are a lot of things in the old code that will be wrong in the new JDK version, such as the `finalize()` function. It is highly recommended to **install Java 8 instead of the latest version of the JDK**. 
 
-:star2: **All of the code in this repo is run on the MacOS (M2) with JDK1.8, [junit-4.13.2](https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar) and [hamcrest-1.3](https://repo1.maven.org/maven2/org/hamcrest/hamcrest-all/1.3/hamcrest-all-1.3.jar)**. Just download the `.jar` files and use the `file => project structure` to orgnize them.
+:star2: **All of the code in this repo is run on the MacOS (M2) with JDK1.8, [junit-4.13.2](https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar) and [hamcrest-1.3](https://repo1.maven.org/maven2/org/hamcrest/hamcrest-all/1.3/hamcrest-all-1.3.jar)**. Just download the `.jar` files and use the `file => project structure` to organize them.
 
 
 
