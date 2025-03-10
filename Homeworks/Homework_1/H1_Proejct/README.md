@@ -195,6 +195,28 @@ public TxHandler(UTXOPool utxoPool) {
 
 ### 2.2 Details of the test suite
 
+Here, a **full range of black-box tests** need to be performed on the three functions implemented above. Simulating a real transaction between Scrooge, Alice and Bob will be very helpful for testing the functionality. To make things easier, some preparatory work has been done before completing the tests in turn.
+
+**Some preparations for tests `@Before`.**
+
+- The original Transaction class did not have a function to sign, which means that it is a question of **where the signature in Input comes from**. Here, the `signTX()` function is added according to the `verifySignature()`method.
+- I create the coinbase transaction `tx0` and initialize the `UTXOPool`. I also create other 9 translations (from `tx1` to `tx9`) **between Alice and Bob**. Some of them are correct while others are incorrect. The specific input-output relationships are shown in Figure 2.
+
+**Tests for the `isValidTx()` function**
+
+In order to present the testing process more clearly, I have plotted the test form here.
+
+| Test Function                      | Test Purpose                                                 | Data for testing                                             | Expected Result             | Actual Result               |
+| ---------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | --------------------------- | --------------------------- |
+| `test_tx_is_valid()`               | Test for valid transactions (which meet 5 conditions).       | Valid transaction `tx1`.                                     | `True`                      | `True`                      |
+| `test_tx_input_not_in_utxoPoo1()`  | Test for UTXO not being containing in UTXOPool because the previous transaction hasn't happened. | Transaction `tx2` before and after transaction `tx1` being handled. | Before `False` After `True` | Before `False` After `True` |
+| `test_tx_input_not_in_utxoPool2()` | Test for UTXO not being contained in UTXOPool because of pointing the **wrong previous transaction's index of outpout**. | Transaction `tx3` with correct previous transaction `tx1` 's hashValue but wrong index. | `False`                     | `False`                     |
+|                                    |                                                              |                                                              |                             |                             |
+
+**Tests for the `handleTxs()` function**
+
+
+
 
 
 

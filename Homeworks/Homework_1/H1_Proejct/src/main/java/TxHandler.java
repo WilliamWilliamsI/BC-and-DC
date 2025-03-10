@@ -28,7 +28,7 @@ public class TxHandler {
      * (2) the signatures on each input of {@code tx} are valid,
      * (3) no UTXO is claimed multiple times by {@code tx},
      * (4) all of {@code tx}'s output values are non-negative, and
-     * (5) the sum of {@code tx}'s input values is greater than or equal to the sum of
+     * (5) the sum of {@code tx}'s input values is greater than or equal to the sum of its output values
      * its output values; and false otherwise.
      */
     public boolean isValidTx(Transaction tx) {
@@ -90,7 +90,7 @@ public class TxHandler {
         }
 
         // all 5 conditions of verifying are passed !
-        System.out.println("This transaction has been verified, it's OK !!");
+        // System.out.println("This transaction has been verified, it's OK !!");
         return true;
     }
 
