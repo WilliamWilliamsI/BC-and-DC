@@ -204,18 +204,21 @@ Here, a **full range of black-box tests** need to be performed on the three func
 
 **Tests for the `isValidTx()` function**
 
-In order to present the testing process more clearly, I have plotted the test form here.
+In order to present the testing process more clearly, I have made the test form here.
 
-| Test Function                      | Test Purpose                                                 | Data for testing                                             | Expected Result             | Actual Result               |
-| ---------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | --------------------------- | --------------------------- |
-| `test_tx_is_valid()`               | Test for valid transactions (which meet 5 conditions).       | Valid transaction `tx1`.                                     | `True`                      | `True`                      |
-| `test_tx_input_not_in_utxoPoo1()`  | Test for UTXO not being containing in UTXOPool because the previous transaction hasn't happened. | Transaction `tx2` before and after transaction `tx1` being handled. | Before `False` After `True` | Before `False` After `True` |
-| `test_tx_input_not_in_utxoPool2()` | Test for UTXO not being contained in UTXOPool because of pointing the **wrong previous transaction's index of outpout**. | Transaction `tx3` with correct previous transaction `tx1` 's hashValue but wrong index. | `False`                     | `False`                     |
-|                                    |                                                              |                                                              |                             |                             |
+| Test Function                                  | Test Purpose                                                 | Data for testing                                             | Expected Result             | Actual Result               |
+| ---------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | --------------------------- | --------------------------- |
+| `test_tx_is_valid()`                           | Test for valid transactions (which meet 5 conditions).       | Valid transaction `tx1`.                                     | `True`                      | `True`                      |
+| `test_tx_input_not_in_utxoPoo1()`              | Test for UTXO not being containing in UTXOPool because the previous transaction hasn't happened. | Transaction `tx2` before and after transaction `tx1` being handled. | Before `False` After `True` | Before `False` After `True` |
+| `test_tx_input_not_in_utxoPool2()`             | Test for UTXO not being contained in UTXOPool because of pointing the wrong previous transaction's index of outpout. | Transaction `tx3` with correct previous transaction `tx1` 's hashValue but wrong index. | `False`                     | `False`                     |
+| `test_tx_input_with_wrong_signature()`         | Test for transaction with wrong signature.                   | Transaction `tx4` with wrong signature                       | `False`                     | `False`                     |
+| `test_utxo_is_claimed_multiple_times()`        | Test for no UTXO is claimed multiple times.                  | Transaction `tx5` with double spending.                      | `False`                     | `False`                     |
+| `test_tx_output_with_negative_values()`        | Test for all of transactions' output values are non-negative. | Transaction `tx6` with negative values of outputs even though the total amount of outputs less than the total inputs. | `False`                     | `False`                     |
+| `text_tx_outputValue_larger_than_inputValue()` | Test for the sum of transactions' input values is greater than or equal to the sum of its output values. | Transaction `tx7` with output > input even though each output amount is less than the total inputs. | `False`                     | `False`                     |
+
+Note that all the testing data with certain deficiencies can become the valid transactions only if we fix the deficiencies. This can be ensure that the data for testing are suitable for the certain circumstances we want.
 
 **Tests for the `handleTxs()` function**
-
-
 
 
 
@@ -225,7 +228,7 @@ In order to present the testing process more clearly, I have plotted the test fo
 
 :e-mail: Because JDK versions are updated so quickly, there are a lot of things in the old code that will be wrong in the new JDK version, such as the `finalize()` function. It is highly recommended to **install Java 8 instead of the latest version of the JDK**. 
 
-:star2: **All of the code in this repo is run on the MacOS (M2) with JDK1.8 and [junit-4.13.2](https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar)**.
+:star2: **All of the code in this repo is run on the MacOS (M2) with JDK1.8, [junit-4.13.2](https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar) and [hamcrest-1.3](https://repo1.maven.org/maven2/org/hamcrest/hamcrest-all/1.3/hamcrest-all-1.3.jar)**. Just download the `.jar` files and use the `file => project structure` to orgnize them.
 
 
 

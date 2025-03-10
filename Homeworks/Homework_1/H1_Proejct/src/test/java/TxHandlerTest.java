@@ -78,7 +78,7 @@ public class TxHandlerTest {
         tx1.signTX(kScrooge.getPrivate(), 0);
 
         // Pay coins transactions 2: [ Alice -> Bob<values=5>, Alice -> Alice<values=4> ]
-        // which is RIGHT after tx1.
+        // which is RIGHT, need tx1 -> tx2.
         tx2 = new TxHandlerTest.TX();
         kBob = KeyPairGenerator.getInstance("RSA").generateKeyPair();
         tx2.addInput(tx1.getHash(), 0);
@@ -93,33 +93,65 @@ public class TxHandlerTest {
         tx3.addOutput(9, kScrooge.getPublic());
         tx3.signTX(kAlice.getPrivate(), 0);
 
-        // Pay coins transactions 4: [ Alice -> Bob amount<values=3>, Alice -> Alice<value=6> ]
-        // but with wrong signature.
+        // Pay coins transactions 4: [ Alice -> Bob amount<values=3>, Alice -> Alice<value=6> ],
+        // but with WRONG signature.
         tx4 = new TxHandlerTest.TX();
         tx4.addInput(tx1.getHash(), 0);
         tx4.addOutput(3, kBob.getPublic());
         tx4.addOutput(6, kAlice.getPublic());
-        tx4.signTX(kScrooge.getPrivate(), 0); //
+        tx4.signTX(kScrooge.getPrivate(), 0);
 
-        // Pay coins transactions 3: [Scrooge -> Bob<values=8>,  Scrooge -> Alexa<values=3>]
-//        tx3 = new TxHandlerTest.TX();
-//        pkAlexa = KeyPairGenerator.getInstance("RSA").generateKeyPair();
-//        tx3.addInput(tx0.getHash(), 0);
-//        tx3.addOutput(8, pkBob.getPublic());
-//        tx3.addOutput(3, pkAlexa.getPublic());
-//        tx3.signTX(pkScrooge.getPrivate(), 0);
+        // Pay coins transactions 5: [ Alice -> Bob<values=9>, Alice -> Scrooge<values=9>],
+        // double spending WRONG !!
+        tx5 = new TxHandlerTest.TX();
+        tx5.addInput(tx1.getHash(), 0);
+        tx5.addInput(tx1.getHash(), 0);
+        tx5.addOutput(9, kBob.getPublic());
+        tx5.addOutput(9, kScrooge.getPublic());
+        tx5.signTX(kAlice.getPrivate(), 0);
+        tx5.signTX(kAlice.getPrivate(), 1);
+
+        // Pay coins transactions 6: [ Bob -> Alice<values=-3>, Bob -> Scrooge<values=8> ],
+        // WRONG due to the negative values, need tx1 -> tx2 -> tx6
+        tx6 = new TxHandlerTest.TX();
+        tx6.addInput(tx2.getHash(), 0);
+        tx6.addOutput(-3, kAlice.getPublic());
+        tx6.addOutput(6, kScrooge.getPublic());
+        tx6.signTX(kBob.getPrivate(), 0);
+
+        // Pay coins transactions 7: [ Bob -> Alice<values=4>, Bob -> Scrooge<values=4>],
+        // WRONG due to sum of input values < sum of output values, need tx1 -> tx2 -> tx7
+        tx7 = new TxHandlerTest.TX();
+        tx7.addInput(tx2.getHash(), 0);
+        tx7.addOutput(4, kAlice.getPublic());
+        tx7.addOutput(4, kScrooge.getPublic());
+        tx7.signTX(kBob.getPrivate(), 0);
+
+        // Pay coins transactions 8: [ Alice -> Bob<values=9> ]
+        // which is RIGHT, need tx1 -> tx8.
+        tx8 = new TxHandlerTest.TX();
+        tx8.addInput(tx1.getHash(), 0);
+        tx8.addOutput(9, kBob.getPublic());
+        tx8.signTX(kAlice.getPrivate(), 0);
+
+        // Pay coins transactions 9: [ Bob -> Scrooge<values=9> ]
+        // which is RIGHT, need tx1 -> tx8 -> tx9.
+        tx9 = new TxHandlerTest.TX();
+        tx9.addInput(tx8.getHash(), 0);
+        tx9.addOutput(9, kScrooge.getPublic());
+        tx9.signTX(kBob.getPrivate(), 0);
     }
 
     /**
      * -------------------------------------- isValidTx() Function Test -------------------------------------- *
      * 1. Function Introduction:
      * The function {@code isValidTx()} is used to verify the validity of each transaction.
-     * It returns Ture if
+     * It returns Ture if meet all 5 conditions:
      * (1) all outputs claimed by {@code tx} are in the current UTXO pool,
      * (2) the signatures on each input of {@code tx} are valid,
      * (3) no UTXO is claimed multiple times by {@code tx},
      * (4) all of {@code tx}'s output values are non-negative, and
-     * (5) the sum of {@code tx}'s input values is greater than or equal to the sum of
+     * (5) the sum of {@code tx}'s input values is greater than or equal to the sum of output values
      * 2. Test Strategy:
      * Violate each rule to each function and test the results one by one.
      * ------------------------------------------------------------------------------------------------------- *
@@ -129,8 +161,16 @@ public class TxHandlerTest {
     public void test_tx_is_valid() {
         // tx1 should be valid
         assertTrue(txHandler.isValidTx(tx1));
+        // thinking deeper
+        // if [ tx1, tx8, tx2 ] handle, the tx9 is valid
+        txHandler.handleTxs(new Transaction[]{tx1, tx8, tx2});
+        assertTrue(txHandler.isValidTx(tx9));
+        // but if [tx1, tx2, tx8 ] handel, the tx9 is not valid !
+        // txHandler.handleTxs(new Transaction[]{tx1, tx2, tx8});
+        // assertTrue(txHandler.isValidTx(tx9));
     }
 
+    // test for condition 1
     @Test
     public void test_tx_input_not_in_utxoPool1() {
         // tx2 should `be not in the current UTXO pool` because tx1 hasn't been handled.
@@ -140,6 +180,7 @@ public class TxHandlerTest {
         assertTrue(txHandler.isValidTx(tx2));
     }
 
+    // test for condition 1
     @Test
     public void test_tx_input_not_in_utxoPool2() {
         // tx3 should `be not in the current UTXO pool` because tx1 hasn't been handled.
@@ -149,10 +190,40 @@ public class TxHandlerTest {
         assertFalse(txHandler.isValidTx(tx3));
     }
 
+    // test for condition 2
     @Test
     public void test_tx_input_with_wrong_signature() {
-        // handle the pre txs, tx4 should be `signature is invalid` because of the wrong signature
+        // handle the pre txs
         txHandler.handleTxs(new Transaction[]{tx1});
+        //  tx4 should be `signature is invalid` because of the wrong signature
         assertFalse(txHandler.isValidTx(tx4));
     }
+
+    // test for condition 3
+    @Test
+    public void test_utxo_is_claimed_multiple_times() {
+        // handle the pre txs
+        txHandler.handleTxs(new Transaction[]{tx1});
+        // tx5 should be `multiple claim of one UTXO` because of the twice claimed utxo
+        assertFalse(txHandler.isValidTx(tx5));
+    }
+
+    // test for condition 4
+    @Test
+    public void test_tx_output_with_negative_values() {
+        // handle the pre txs
+        txHandler.handleTxs(new Transaction[]{tx1, tx2});
+        // tx6 should be `the output's value is negative` because of the value of output is negative
+        assertFalse(txHandler.isValidTx(tx6));
+    }
+
+    // test for condition 5
+    @Test
+    public void text_tx_outputValue_larger_than_inputValue() {
+        // handle the pre txs
+        txHandler.handleTxs(new Transaction[]{tx1, tx2});
+        // tx7 should be `the output's value is negative` because of the total output values > total input values
+        assertFalse(txHandler.isValidTx(tx7));
+    }
+
 }

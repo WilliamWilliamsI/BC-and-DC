@@ -85,7 +85,7 @@ public class TxHandler {
 
         // (5) ensure the sum of tx's input values is greater than or equal to the sum of its output values
         if (inputsTotalValues < outputsTotalValues) {
-            System.out.println("ERROR (5): inputsTotalValues < outputsTotalValues !!");
+            System.out.println("ERROR (5): outputsTotalValues > inputsTotalValues !!");
             return false;
         }
 
