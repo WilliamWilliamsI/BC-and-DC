@@ -242,7 +242,7 @@ public class TxHandlerTest {
     @Test
     public void test_handle_unordered_txs() {
         // given an unordered array of proposed transactions (some are valid, some are not)
-        Transaction[] unorderedTxs = new Transaction[]{tx3, tx4, tx8, tx9, tx5, tx6, tx7, tx2, tx1};
+        Transaction[] unorderedTxs = new Transaction[]{tx3, tx4, tx9, tx5, tx6, tx7, tx2, tx8, tx1};
         Transaction[] acceptedTxs = new Transaction[]{tx1, tx2};
         assertArrayEquals(acceptedTxs, txHandler.handleTxs(unorderedTxs));
     }
