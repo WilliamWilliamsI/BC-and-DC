@@ -3,7 +3,8 @@
 ```python
 H1_Proejct/
 ├── docs/
-    ├── Homework_1.pdf # The need of homework 1.
+    ├── Homework_1.pdf # The requirement of homework 1.
+    ├── Homework_1_report.pdf # The report of homework 1.
     └── Images.pptx # The images of homework 1.
 ├── src/ # The source codes (code framework is following the maven framework).
     ├── main.java/ # The main classes.
@@ -240,9 +241,9 @@ I strongly recommend that you refer to Figure 2. for the observations made here!
 
 In my environment (details of which are described below), **all of the above 10 test functions passed**, as shown in Figure 3.
 
-<img src="./docs/imgs/idea_test_results.png" alt="idea_test_results " style="zoom:25%;" />
+<img src="./docs/imgs/idea_test_results.png" alt="idea_test_results " style="zoom:30%;" />
 
-<center>Figure 3. The test results in my environment.</center>
+<center>Figure 3. The test results in my PC.</center>
 
 
 
@@ -251,6 +252,12 @@ In my environment (details of which are described below), **all of the above 10 
 :e-mail: Because JDK versions are updated so quickly, there are a lot of things in the old code that will be wrong in the new JDK version, such as the `finalize()` function. It is highly recommended to **install Java 8 instead of the latest version of the JDK**. 
 
 :star2: **All of the code in this repo is run on the MacOS (M2) with JDK1.8, [junit-4.13.2](https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar) and [hamcrest-1.3](https://repo1.maven.org/maven2/org/hamcrest/hamcrest-all/1.3/hamcrest-all-1.3.jar)**. Just download the `.jar` files and use the `file => project structure` to organize them.
+
+:cat: To demonstrate the reproducibility of the results, I built a CI tool using GitHub Actions to [run the test code online](https://github.com/KarryRen/BC-and-DC/actions/runs/13764485375/job/38487708521#step:4:566) and show the results. Figure 4. shows the results from the CI, and again, it passes all the tests!
+
+<img src="./docs/imgs/ci_test_results.png" alt="ci_test_results " style="zoom:45%;" />
+
+<center>Figure 4. The test results in CI.</center>
 
 
 
