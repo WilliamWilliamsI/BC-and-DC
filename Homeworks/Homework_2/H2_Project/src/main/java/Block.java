@@ -1,3 +1,9 @@
+/**
+ * @Time : 2025/3/22 17:43
+ * @Author : http://bitcoinbook.cs.princeton.edu/
+ * @Comment: A class stores the block data structure.
+ **/
+
 package main.java;
 
 import java.security.MessageDigest;
@@ -6,16 +12,20 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 
 public class Block {
-
+    // reward from mining one block
     public static final double COINBASE = 25;
-
+    // hash value of this block
     private byte[] hash;
+    // hash value of the previous block
     private byte[] prevBlockHash;
+    // coinbase transaction
     private Transaction coinbase;
+    // array of all collected transactions in this block
     private ArrayList<Transaction> txs;
 
     /**
-     * {@code address} is the address to which the coinbase transaction would go
+     * {@code address} is the address to which the coinbase transaction would go.
+     * Create the coinbase transaction, which has only one Output and no Input.
      */
     public Block(byte[] prevHash, PublicKey address) {
         prevBlockHash = prevHash;
@@ -47,6 +57,10 @@ public class Block {
         txs.add(tx);
     }
 
+    /**
+     * Get the raw data of feature in block
+     * (prevBlockHash & raw feature in all transactions).
+     */
     public byte[] getRawBlock() {
         ArrayList<Byte> rawBlock = new ArrayList<Byte>();
         if (prevBlockHash != null)
@@ -64,6 +78,9 @@ public class Block {
         return raw;
     }
 
+    /**
+     * Get the raw data of feature in block to compute hash.
+     */
     public void finalize() {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");

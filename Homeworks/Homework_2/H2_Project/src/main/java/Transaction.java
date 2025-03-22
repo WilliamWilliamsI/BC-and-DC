@@ -140,7 +140,7 @@ public class Transaction {
     }
 
     /**
-     * create a coinbase transaction of value {@code coin} and calls finalize on it
+     * Create a coinbase transaction of value {@code coin} and calls finalize on it.
      */
     public Transaction(double coin, PublicKey address) {
         coinbase = true;

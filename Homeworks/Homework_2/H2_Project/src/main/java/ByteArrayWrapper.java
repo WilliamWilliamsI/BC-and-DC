@@ -3,6 +3,7 @@
  * @Author : http://bitcoinbook.cs.princeton.edu/
  * @Comment: A utility file which creates a wrapper for byte arrays such that it
  * could be used as a key in hash functions. (See TransactionPool.java).
+ * <p/>
  * @Utility: A wrapper for byte array with hashCode and equals function implemented.
  **/
 
@@ -11,7 +12,6 @@ package main.java;
 import java.util.Arrays;
 
 public class ByteArrayWrapper {
-
     private byte[] contents;
 
     public ByteArrayWrapper(byte[] b) {

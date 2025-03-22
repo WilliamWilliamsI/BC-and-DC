@@ -1,7 +1,13 @@
+/**
+ * @Time : 2025/3/22 18:59
+ * @Author : KarryRen
+ * @Comment: The blockChain class.
+ * @Warning: Block Chain should maintain only limited block nodes to satisfy the functions
+ * You should not have all the blocks added to the blockchain in memory
+ * as it would cause a memory overflow.
+ **/
+
 package main.java;
-// Block Chain should maintain only limited block nodes to satisfy the functions
-// You should not have all the blocks added to the blockchain in memory
-// as it would cause a memory overflow.
 
 public class BlockChain {
     public static final int CUT_OFF_AGE = 10;

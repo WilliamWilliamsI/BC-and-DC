@@ -126,7 +126,6 @@ public class Transaction {
 
     public byte[] getRawTx() {
         ArrayList<Byte> rawTx = new ArrayList<Byte>();
-
         for (Input in : inputs) {
             byte[] prevTxHash = in.prevTxHash;
             ByteBuffer b = ByteBuffer.allocate(Integer.SIZE / 8);
@@ -140,7 +139,6 @@ public class Transaction {
             if (signature != null) for (int i = 0; i < signature.length; i++)
                 rawTx.add(signature[i]);
         }
-
         for (Output op : outputs) {
             ByteBuffer b = ByteBuffer.allocate(Double.SIZE / 8);
             b.putDouble(op.value);
@@ -153,12 +151,10 @@ public class Transaction {
                 rawTx.add(addressBytes[i]);
             }
         }
-
         byte[] tx = new byte[rawTx.size()];
         int i = 0;
         for (Byte b : rawTx)
             tx[i++] = b;
-
         return tx;
     }
 
