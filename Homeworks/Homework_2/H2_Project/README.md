@@ -1,13 +1,14 @@
-# H2 Project: ScroogeCoin
+# H2 Project: Block Chain
 
 ```python
 H2_Proejct/
 ├── docs/
+    ├── Homework_2.pdf # The requirements of homework2.
     └── Images.pptx # The images of homework 2.
 ├── src/ # The source codes (code framework is following the maven framework).
     ├── main.java/ # The main classes.
     ├── test.java/ # The test classes.
-├── pom.xml # The settings of Maven for CI (in GitHub Actions).
+├── H2_Project.iml # The config file for Intellij IDEA.
 └── .gitignore # The gitignore file.
 ```
 
@@ -15,13 +16,11 @@ H2_Proejct/
 
 ## 1. Overview & Analysis
 
-:pencil: The detailed requirements of homework 1 are in the `docs/Homework_1.pdf`:
+:pencil: The detailed requirements of homework 2 are in the `docs/Homework_2.pdf`. 
 
-- We will implement the logic used by Scrooge to **process transactions and produce the ledger**.
-- Transactions can’t be validated in isolation; it is a tricky problem to choose a subset of transactions that are **together** valid.
-- We will be responsible for **creating** a file called `TxHandler.java` that implements the required API and **testing** it.
 
-This is a cryptocurrency trading process that matches what was taught in class. We need to write the transaction handler to ensure that the transaction is correct. 
+
+
 
 :recycle: To complete this assignment, we must first analyze **the given class code**:
 
@@ -245,9 +244,7 @@ In my environment (details of which are described below), **all of the above 10 
 
 :star2: **All of the code in this repo is run on the MacOS (M2) with JDK1.8, [junit-4.13.2](https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar) and [hamcrest-1.3](https://repo1.maven.org/maven2/org/hamcrest/hamcrest-all/1.3/hamcrest-all-1.3.jar)**. Just download the `.jar` files and use the `file => project structure` to organize them.
 
-:cat: To demonstrate the reproducibility of the results, I built a CI tool using GitHub Actions to [run the test code online](https://github.com/KarryRen/BC-and-DC/actions/runs/13764485375/job/38487708521#step:4:566) and show the results. Figure 4. shows the results from the CI, and again, it passes all the tests!
-
-<img src="./docs/imgs/ci_test_results.png" alt="ci_test_results " style="zoom:45%;" />
+:cat: To demonstrate the reproducibility of the results, I built a CI tool using GitHub Actions to run the test code online and show the results. Figure 4. shows the results from the CI, and again, it passes all the tests!
 
 <center>Figure 4. The test results in CI.</center>
 
@@ -261,6 +258,4 @@ There are 2 high quality open-sourced codes we can refer to. Thanks for the sibl
 
 - [**JiZhong Cao**](https://github.com/1901212561/PHBS_BlockChain_2019/)
 - [**TingWei Shen**](https://github.com/SnakeWayne/PHBS_BlockChain_2019)
-
-:warning: In addition to these direct references, the framing of background content is critical, and further study of the [**references cited by the instructor**](https://zhuanlan.zhihu.com/p/121039362) in class can be done here.
 

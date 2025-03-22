@@ -1,3 +1,4 @@
+package main.java;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -13,7 +14,9 @@ public class Block {
     private Transaction coinbase;
     private ArrayList<Transaction> txs;
 
-    /** {@code address} is the address to which the coinbase transaction would go */
+    /**
+     * {@code address} is the address to which the coinbase transaction would go
+     */
     public Block(byte[] prevHash, PublicKey address) {
         prevBlockHash = prevHash;
         coinbase = new Transaction(COINBASE, address);

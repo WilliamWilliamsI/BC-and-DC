@@ -1,7 +1,7 @@
 /**
  * @Time : 2025/3/8 17:03
  * @Author : Karry Ren
- * @Comment:T he implementation of TxHandler class,
+ * @Comment: The implementation of TxHandler class,
  * which contains 3 methods: TxHandler(), isValidTx(), and handleTxs().
  **/
 
@@ -27,9 +27,9 @@ public class TxHandler {
      * (1) all outputs claimed by {@code tx} are in the current UTXO pool,
      * (2) the signatures on each input of {@code tx} are valid,
      * (3) no UTXO is claimed multiple times by {@code tx},
-     * (4) all of {@code tx}'s output values are non-negative, and
-     * (5) the sum of {@code tx}'s input values is greater than or equal to the sum of its output values
-     * its output values; and false otherwise.
+     * (4) all of {@code tx}'s output values are non-negative,
+     * (5) the sum of {@code tx}'s input values is >= the sum of its output values its output values;
+     * and return false otherwise.
      */
     public boolean isValidTx(Transaction tx) {
         // (0) check whether tx is null or not
@@ -95,10 +95,9 @@ public class TxHandler {
     }
 
     /**
-     * Handles each epoch by receiving an unordered array of proposed
-     * transactions, checking each transaction for correctness,
-     * returning a mutually valid array of accepted transactions,
-     * and updating the current UTXO pool as appropriate.
+     * Handles each epoch by receiving an unordered array of proposed transactions,
+     * checking each transaction for correctness, returning a mutually valid array
+     * of accepted transactions, and updating the current UTXO pool as appropriate.
      */
     public Transaction[] handleTxs(Transaction[] possibleTxs) {
         // define the accepted transactions array

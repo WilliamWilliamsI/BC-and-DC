@@ -1,3 +1,12 @@
+/**
+ * @Time : 2025/3/22 10:14
+ * @Author : http://bitcoinbook.cs.princeton.edu/
+ * @Comment: A Transaction class that represents a ScroogeCoin transaction and has inner
+ * classes Transaction.Output and Transaction.Input.
+ * @Waring : This class is different from the one in homework 1, because the coinbase transaction.
+ **/
+
+package main.java;
 
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
@@ -8,13 +17,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Transaction {
-
     public class Input {
-        /** hash of the Transaction whose output is being used */
+        // hash of the Transaction whose output is being used
         public byte[] prevTxHash;
-        /** used output's index in the previous transaction */
+        // used output's index in the previous transaction
         public int outputIndex;
-        /** the signature produced to check validity */
+        // the signature produced to check validity
         public byte[] signature;
 
         public Input(byte[] prevHash, int index) {
@@ -69,9 +77,9 @@ public class Transaction {
     }
 
     public class Output {
-        /** value in bitcoins of the output */
+        // value in bitcoins of the output
         public double value;
-        /** the address or public key of the recipient */
+        // the address or public key of the recipient
         public PublicKey address;
 
         public Output(double v, PublicKey addr) {
@@ -109,10 +117,13 @@ public class Transaction {
         }
     }
 
-    /** hash of the transaction, its unique id */
+    // hash of the transaction, its unique id
     private byte[] hash;
+    // a list of inputs
     private ArrayList<Input> inputs;
+    // a list of outputs
     private ArrayList<Output> outputs;
+    // is the coinbase transaction or not
     private boolean coinbase;
 
     public Transaction() {
@@ -128,7 +139,9 @@ public class Transaction {
         coinbase = false;
     }
 
-    /** create a coinbase transaction of value {@code coin} and calls finalize on it */
+    /**
+     * create a coinbase transaction of value {@code coin} and calls finalize on it
+     */
     public Transaction(double coin, PublicKey address) {
         coinbase = true;
         inputs = new ArrayList<Input>();
@@ -294,11 +307,13 @@ public class Transaction {
         if (other == null) {
             return false;
         }
+
         if (getClass() != other.getClass()) {
             return false;
         }
 
         Transaction tx = (Transaction) other;
+
         // inputs and outputs should be same
         if (tx.numInputs() != numInputs())
             return false;

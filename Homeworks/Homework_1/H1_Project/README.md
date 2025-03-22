@@ -16,6 +16,7 @@ H1_Proejct/
         └── TxHandler.java
     ├── test.java/ # The test classes.
         └── TxHandlerTest.java 
+├── H1_Project.iml # The IDEA Intellij config file.
 ├── pom.xml # The settings of Maven for CI (in GitHub Actions).
 └── .gitignore # The gitignore file.
 ```

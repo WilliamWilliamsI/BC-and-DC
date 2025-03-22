@@ -1,7 +1,15 @@
+/**
+ * @Time : 2025/3/22 10:25
+ * @Author : http://bitcoinbook.cs.princeton.edu/
+ * @Comment: A utility file which creates a wrapper for byte arrays such that it
+ * could be used as a key in hash functions. (See TransactionPool.java).
+ * @Utility: A wrapper for byte array with hashCode and equals function implemented.
+ **/
+
+package main.java;
 
 import java.util.Arrays;
 
-/** a wrapper for byte array with hashCode and equals function implemented */
 public class ByteArrayWrapper {
 
     private byte[] contents;
@@ -16,6 +24,7 @@ public class ByteArrayWrapper {
         if (other == null) {
             return false;
         }
+
         if (getClass() != other.getClass()) {
             return false;
         }
@@ -23,19 +32,14 @@ public class ByteArrayWrapper {
         ByteArrayWrapper otherB = (ByteArrayWrapper) other;
         byte[] b = otherB.contents;
         if (contents == null) {
-            if (b == null)
-                return true;
-            else
-                return false;
+            if (b == null) return true;
+            else return false;
         } else {
-            if (b == null)
-                return false;
+            if (b == null) return false;
             else {
-                if (contents.length != b.length)
-                    return false;
+                if (contents.length != b.length) return false;
                 for (int i = 0; i < b.length; i++)
-                    if (contents[i] != b[i])
-                        return false;
+                    if (contents[i] != b[i]) return false;
                 return true;
             }
         }

@@ -1,6 +1,6 @@
 /**
  * @Time : 2025/3/8 12:27
- * @Author : http://bitcoinbook.cs.princeton.edu/.
+ * @Author : http://bitcoinbook.cs.princeton.edu/
  * @Comment: The UTXO class that represents an unspent transaction output.
  **/
 

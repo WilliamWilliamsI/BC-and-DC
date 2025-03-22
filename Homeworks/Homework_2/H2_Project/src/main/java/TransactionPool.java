@@ -1,3 +1,10 @@
+/**
+ * @Time : 2025/3/22 11:14
+ * @Author : http://bitcoinbook.cs.princeton.edu/
+ * @Comment: Implements a pool of transactions, required when creating a new block.
+ **/
+
+package main.java;
 
 import java.util.ArrayList;
 import java.util.HashMap;

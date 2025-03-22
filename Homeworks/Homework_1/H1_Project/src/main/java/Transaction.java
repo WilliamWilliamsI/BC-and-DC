@@ -1,6 +1,6 @@
 /**
  * @Time : 2025/3/8 12:27
- * @Author : http://bitcoinbook.cs.princeton.edu/.
+ * @Author : http://bitcoinbook.cs.princeton.edu/
  * @Comment: A Transaction class that represents a ScroogeCoin transaction and has inner
  * classes Transaction.Output and Transaction.Input.
  **/
