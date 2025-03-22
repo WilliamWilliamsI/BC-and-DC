@@ -1,21 +1,12 @@
-# H1 Project: ScroogeCoin
+# H2 Project: ScroogeCoin
 
 ```python
-H1_Proejct/
+H2_Proejct/
 ├── docs/
-    ├── Homework_1.pdf # The requirement of homework 1.
-    ├── Homework_1_report.pdf # The report of homework 1.
-    ├── imgs/ # The saved images.
-    └── Images.pptx # The images of homework 1.
+    └── Images.pptx # The images of homework 2.
 ├── src/ # The source codes (code framework is following the maven framework).
     ├── main.java/ # The main classes.
-        ├── Transaction.java
-        ├── Crypto.java
-        ├── UTXO.java
-        ├── UTXOPool.java
-        └── TxHandler.java
     ├── test.java/ # The test classes.
-        └── TxHandlerTest.java 
 ├── pom.xml # The settings of Maven for CI (in GitHub Actions).
 └── .gitignore # The gitignore file.
 ```
