@@ -27,15 +27,13 @@ Based on the handling of transactions already implemented in homework 1, we star
 :recycle: To complete this assignment, we must first analyze **the given class code**:
 
 - **`UTXO.java`** and **`UTXOPool.java`** are same as the homework 1, which are used to manage the unspent transactions outputs. **` Crypto.java`** is also same as the one provided in homework 1.
-- **`TxHandler.java`** has the same logic as my previous implementation. However, it simplifies the implementation of the `handleTxs()` function and does not take into account the unordered nature of the proposed transactions. It also adds a new function `getUTXOPool()`.
+- **`TxHandler.java`** has the same logic as my previous implementation. However, it simplifies the implementation of the `handleTxs()` function and does not take into account the unordered nature of the proposed transactions. It also **adds a new function `getUTXOPool()`** to it.
 - **` Transaction.java`** is similar to `Transaction.java` as provided in homework 1 except for introducing functionality to create a `coinbase` transaction.
 - **`ByteArrayWrapper.java`** is a utility file which creates a wrapper for byte arrays such that it could be used as a key in hash functions (this class is with `hashCode()` and `equals()` function implemented). 
 - **`Block.java`** stores the block data structure. It contains at least one transaction (the one called `coinbase` that received `COINBASE`), and the rest of the transactions are in a separate array `txs[]`.
 - **`BlockHandler.java`** uses `BlockChain.java` to process a newly received block, create a new block, or process a newly received transaction.
 
-There are also some more detailed information:
-
-- The coinbase value is kept constant at 25 bitcoins whereas in reality it halves roughly every 4 years and is currently 12.5 BTC. So, the `Block.COINBASE = 25`.
+There are also some more detailed information: The coinbase value is kept constant at 25 bitcoins whereas in reality it halves roughly every 4 years and is currently 12.5 BTC. So, the `Block.COINBASE = 25`.
 
 :page_facing_up: Based on these elements, we need to finish **implementing and testing** the `blockChain.java`:
 
@@ -101,14 +99,26 @@ public class BlockChain {
 
 ## 2. Implementation & Test
 
-The runnable result code is a and b.  In this section, I will elaborate on the class **implementation** and **test** code writing logic:
+The runnable result code is a and b.  In this section, I will elaborate the **implementation** and **test** code writing logic:
 
 - The **implementation of blockChain class**.
-- The **test suite** to verify the implementation.
+- The **test suite** to verify the related implementation.
 
 ### 2.1 Details of the implementation
 
-**The data structure of blockChain.**
+**Storage structure of blockChain.**
+
+Given there might be multiple forks, the data structure of the block chain **should be a tree rather than a list**. While, for the storage structure, there is no need to store the blocks in to the tree because we can create a tree data structure using a list by storing the hash of this block and the state of this block in the block chain. The state of the block records the **1) content of this block**, **2) the height of the block** and **3) the corresponding UTXOPool**. Based on this, I build a `BlockState` class in `BlockState.java` to store these three elements and the ways to get them.
+
+Considering that **the order of storage is meaningless**, it would be inconvenient if we use list to store the block chain. Finally, I decided to **use Map as the storage structure**, as shown in Figure 1.  The attribute in `BlockChain` should be defined as:
+
+```java
+private Map<byte[], BlockState> blockChain;
+```
+
+The `hash` of the block is the key and the `state` of the blcok is the value in this map, and they can form a one-to-one mapping. This not only allows for an **efficient implementation** of the data storage structure, but also **improves the efficiency** of block chain related operations, such as searching.
+
+
 
 
 

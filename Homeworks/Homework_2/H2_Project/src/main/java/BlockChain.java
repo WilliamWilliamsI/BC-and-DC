@@ -13,8 +13,8 @@ public class BlockChain {
     public static final int CUT_OFF_AGE = 10;
 
     /**
-     * create an empty blockchain with just a genesis block. Assume {@code genesisBlock} is a valid
-     * block
+     * create an empty blockchain with just a genesis block.
+     * Assume {@code genesisBlock} is a valid block.
      */
     public BlockChain(Block genesisBlock) {
         // IMPLEMENT THIS
