@@ -9,7 +9,10 @@
 package main.java;
 
 import java.security.PublicKey;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class TxHandler {
     // define the private utxoPool
@@ -115,43 +118,22 @@ public class TxHandler {
      */
     public Transaction[] handleTxs(Transaction[] possibleTxs) {
         // define the accepted transactions array
-        ArrayList<Transaction> acceptedTxs = new ArrayList<>();
+        List<Transaction> acceptedTx = new ArrayList<Transaction>();
 
-        // go through over and over again, until can't find the valid transaction
-        while (true) {
-            // the flag to detect whether it finds valid transaction in going through or not
-            boolean findValidTxFlag = false;
-            // go through possibleTxs
-            for (Transaction tx : possibleTxs) {
-                if (acceptedTxs.contains(tx)) {
-                    continue;
-                } else {
-                    if (isValidTx(tx)) {
-                        // find the valid transaction add to the array and change the flag
-                        acceptedTxs.add(tx);
-                        findValidTxFlag = true;
-                        // update utxoPool: add new valid output to utxoPool
-                        for (int o = 0; o < tx.numOutputs(); o++) {
-                            Transaction.Output output = tx.getOutput(o);
-                            UTXO utxo = new UTXO(tx.getHash(), o);
-                            utxoPool.addUTXO(utxo, output);
-                        }
-                        // update utxoPool: remove spent valid input from utxoPool
-                        for (int i = 0; i < tx.numInputs(); i++) {
-                            Transaction.Input input = tx.getInput(i);
-                            UTXO utxo = new UTXO(input.prevTxHash, input.outputIndex);
-                            utxoPool.removeUTXO(utxo);
-                        }
-                    }
-                }
+        // for loop to check remove and add
+        for (int i = 0; i < possibleTxs.length; i++) {
+            Transaction tx = possibleTxs[i];
+            if (isValidTx(tx)) {
+                acceptedTx.add(tx);
+                removeConsumedCoinsFromPool(tx);
+                addCreatedCoinsToPool(tx);
             }
-            // there is no valid transaction left, just break.
-            if (!findValidTxFlag)
-                break;
         }
 
         // transfer the ArrayList<Transaction> to Transaction[]
-        return acceptedTxs.toArray(new Transaction[acceptedTxs.size()]);
+        Transaction[] result = new Transaction[acceptedTx.size()];
+        acceptedTx.toArray(result);
+        return result;
     }
 
     private void addCreatedCoinsToPool(Transaction tx) {

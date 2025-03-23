@@ -20,8 +20,8 @@ jobs:
           distribution: "temurin"
           architecture: x64
 
-      - name: Build with Maven to Test Homeworks/Homework_1/H1_Project
+      - name: Build with Maven to Test Homeworks/Homework_2/H2_Project
         run: |
-          cd Homeworks/Homework_1/H1_Project/
+          cd Homeworks/Homework_2/H2_Project/
           mvn -B test
           cd ../../../

@@ -4,11 +4,25 @@
 H2_Proejct/
 ├── docs/
     ├── Homework_2.pdf # The requirements of homework2.
+    ├── imgs/ # The saved images.
     └── Images.pptx # The images of homework 2.
 ├── src/ # The source codes (code framework is following the maven framework).
     ├── main.java/ # The main classes.
+      ├── Block.java
+      ├── BlockChain.java
+      ├── BlockHandler.java
+      ├── BlockState.java
+      ├── ByteArrayWrapper.java
+      ├── Crypto.java
+      ├── Transaction.java
+      ├── TransactionPool.java
+      ├── TxHandler.java
+      ├── UTXO.java
+      └── UTXOPool.java
     ├── test.java/ # The test classes.
+      └── BlockChainTest.java
 ├── H2_Project.iml # The config file for Intellij IDEA.
+├── pom.xml # The settings of Maven for CI (in GitHub Actions).
 └── .gitignore # The gitignore file.
 ```
 
@@ -27,7 +41,7 @@ Based on the handling of transactions already implemented in homework 1, we star
 :recycle: To complete this assignment, we must first analyze **the given class code**:
 
 - **`UTXO.java`** and **`UTXOPool.java`** are same as the homework 1, which are used to manage the unspent transactions outputs. **` Crypto.java`** is also same as the one provided in homework 1.
-- **`TxHandler.java`** has the same logic as my previous implementation. However, it simplifies the implementation of the `handleTxs()` function and does not take into account the unordered nature of the proposed transactions. It also **adds a new function `getUTXOPool()`** to it.
+- **`TxHandler.java`** has the same logic as my previous implementation. However, it simplifies the implementation of the `handleTxs()` function and does not take into account the unordered nature of the proposed transactions. It also **adds a new function `getUTXOPool()`** to it (But it has error :warning:) .
 - **` Transaction.java`** is similar to `Transaction.java` as provided in homework 1 except for introducing functionality to create a `coinbase` transaction.
 - **`ByteArrayWrapper.java`** is a utility file which creates a wrapper for byte arrays such that it could be used as a key in hash functions (this class is with `hashCode()` and `equals()` function implemented). 
 - **`Block.java`** stores the block data structure. It contains at least one transaction (the one called `coinbase` that received `COINBASE`), and the rest of the transactions are in a separate array `txs[]`.
@@ -109,7 +123,7 @@ public class BlockChain {
 
 ## 2. Implementation & Test
 
-The runnable result code is a and b.  In this section, I will elaborate the **implementation** and **test** code writing logic:
+In this section, I will elaborate the **implementation** and **test** code writing logic:
 
 - The **implementation of BlockChain class**.
 - The **test suite** to verify the related implementation.
@@ -119,6 +133,10 @@ The runnable result code is a and b.  In this section, I will elaborate the **im
 **Part 0. Storage structure of block chain.**
 
 Given there might be multiple forks, the data structure of the block chain **should be a tree rather than a list**. While, for the storage structure, there is no need to store the blocks in the tree because we can create a tree data structure using a list by storing the hash of this block and the state of this block in the block chain. The state of the block records the **1) content of this block**, **2) the height of the block** and **3) the corresponding UTXOPool**. Based on this, I build a `BlockState` class in `BlockState.java` to store these three elements and the ways to get them.
+
+<img src="./docs/imgs/Figure1.png" alt="Figure1 " style="zoom:7%;" />
+
+<center>Figure 1. Store the tree-like data of block chain int map.</center>
 
 Considering that **the order of storage is meaningless**, it would be inconvenient if we use the list to store the block chain. Finally, I decided to **use Map as the storage structure**, as shown in Figure 1.  The attribute in `BlockChain` should be defined as:
 
@@ -252,7 +270,48 @@ public void addTransaction(Transaction tx) {
 
 ### 2.2 Details of the test suite
 
+Here, a **full range of black-box tests** need to be performed on six functions implemented above. Overall, given the state of the blockchain can be divided into two parts: the single branch scenario and the forking scenario, I test them respectively. To make things easier, some preparatory work has been done before completing the tests in turn.
 
+**Preparations for tests `@Before`**
+
+First, to simulate a more realistic situation, I built a more secure keyPair generator `secureKeyPair()` that uses `SecureRandom()` to generate 2048-bit key. Second, I write a tool function called `createTransaction()` to help create transactions in quick way. Finally, I created the genesisBlock and initialized the BlockChain in the `@Before` module. 
+
+**Tests for single branch scenario**
+
+Using the constructor to create a new empty block chain and then add some blocks to see if it can add the block to the blockchain correctly. By this process, the six functions can be test. The details are shown in the following table.
+
+| Test Function                             | Test Purpose                                                 | Data for testing                                             | The functions being test                                     |
+| ----------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `test_only_genesis_block()`               | Test for only genesis block existing.                        | No other data.                                               | `BlockChain()` `getMaxHeightBlock()` `getMaxHeightUTXOPool()` `getTransactionPool()` |
+| `test_block_with_one_coinbase_tx()`       | Test for a valid block linked the genesis block. The valid block contains a transaction spending parent block's coinbase money. | A valid block with only one valid transaction.               | All the six methods I have implemented.                      |
+| `test_block_with_several_valid_txs()`     | Test for a valid block linked the genesis block.             | A valid block with three valid transactions.                 | All the six methods I have implemented.                      |
+| `test_block_with_invalid_txs_in_txPool()` | Test for whether it can tell the invalid transactions in the transaction pool and leave them in the transaction pool rather than add them in the block. | A transaction pool with 2 valid transactions and an invalid transaction. | All the six methods I have implemented.                      |
+| `test_block_with_null_preHash()`          | Test if `addBlock()` can reject a block with null prehash.   | A block whose previous hash is `null`.                       | All the six methods I have implemented.                      |
+| `test_block_with_wrong_preHash()`         | Test if `addBlock()` can reject a block whose prehash isn't in the blockchain. | A block whose prehash isn't in the blockchain.               | All the six methods I have implemented.                      |
+| `test_block_with_invalid_txs()`           | Test if `addBlock()` can reject a block which contains invalid transactions. | A block whose prehash isn't in the blockchain.               | All the six methods I have implemented.                      |
+| `test_storage_condition()`                | Test if the block will throw some blocks when the blockchain's max height doesn't satisfy the storage condition. | Genesis block and 23 valid blocks (The storage condition is 20 in my program). | All the six methods I have implemented.                      |
+
+Note that when testing whether it can tell the invalid transactions in the transaction pool, I just test one case (double spending) because the other cases have been test in the last homework. So I just use the double spending as representative.
+
+**Test for forking scenario**
+
+In this scenario, I use the constructor to create a new empty block chain and then try to make some forks to see if it can add the blocks in the blockchain correctly.
+
+All the cases can test all the six method I have been implemented so I won't mention this in the following table.
+
+| Test Function                   | Test Purpose                                                 | Data for testing                                             |
+| ------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `test_CUT_OFF_AGE_condition()`  | Test for CUT_OFF_AGE_Condition.                              | Genesis block, 11 valid blocks linked one by one, a block whose parent node is genesis block and a block whose parent node is the first block linked to the genesis block. |
+| `test_mul_blocks_same_height()` | If there are multiple blocks at the same height, it should consider the oldest block in the longest valid branch. However, all of them should be in the clockchain. | Two valid blocks adding to the genesis block one after another. |
+| `test_forking_attack()`         | Test if there are two branches with the same height, whichever has the next block first will become to the new longest valid branch. | Genesis block and three valid blocks.                        |
+
+:100: **Test results in my environment**
+
+In my environment (details of which are described below), **all of the above 11 test functions passed**, as shown in Figure 2.
+
+<img src="./docs/imgs/Figure2.png" alt="Figure2 " style="zoom:40%;" />
+
+<center>Figure 2. The test resuls.</center>
 
 ## 3. Environment
 
@@ -260,7 +319,7 @@ public void addTransaction(Transaction tx) {
 
 :star2: **All of the code in this repo is run on the MacOS (M2) with JDK1.8, [junit-4.13.2](https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar) and [hamcrest-1.3](https://repo1.maven.org/maven2/org/hamcrest/hamcrest-all/1.3/hamcrest-all-1.3.jar)**. Just download the `.jar` files and use the `file => project structure` to organize them.
 
-:cat: To demonstrate the reproducibility of the results, I built a CI tool using GitHub Actions to run the test code online and show the results. Figure 4. shows the results from the CI, and again, it passes all the tests!
+:cat: To demonstrate the reproducibility of the results, I built a CI tool using GitHub Actions to run the test code online and show the results.
 
 
 

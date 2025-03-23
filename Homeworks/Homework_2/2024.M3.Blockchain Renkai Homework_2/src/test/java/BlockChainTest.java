@@ -7,13 +7,13 @@
 package test.java;
 
 import main.java.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.security.*;
 
 import static org.junit.Assert.*;
-
 
 public class BlockChainTest {
     // some needed private attributes
@@ -68,7 +68,6 @@ public class BlockChainTest {
         // initialize the block chain
         blockChain = new BlockChain(genesisBlock);
     }
-
 
     /**
      * --------------------------------------  Branch Scenario -------------------------------------- *
@@ -216,8 +215,7 @@ public class BlockChainTest {
     }
 
     @Test
-    public void test_block_with_wrong_preHash() throws
-            NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+    public void test_block_with_wrong_preHash() throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         // players
         int numOfPlayers = 8;
         KeyPair[] keyPair = new KeyPair[numOfPlayers];
