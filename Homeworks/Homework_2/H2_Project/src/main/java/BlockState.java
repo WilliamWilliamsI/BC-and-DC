@@ -22,6 +22,10 @@ public class BlockState {
         this.utxoPool = utxoPool;
     }
 
+    public Block getBlock() {
+        return block;
+    }
+
     public int getHeight() {
         return height;
     }

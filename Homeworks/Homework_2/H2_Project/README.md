@@ -35,7 +35,7 @@ Based on the handling of transactions already implemented in homework 1, we star
 
 There are also some more detailed information: The coinbase value is kept constant at 25 bitcoins whereas in reality it halves roughly every 4 years and is currently 12.5 BTC. So, the `Block.COINBASE = 25`.
 
-:page_facing_up: Based on these elements, we need to finish **implementing and testing** the `blockChain.java`:
+:page_facing_up: Based on these elements, we need to finish **implementing and testing** the `BlockChain.java`:
 
 ```java
 // Block Chain should maintain only limited block nodes to satisfy the functions
@@ -46,41 +46,51 @@ public class BlockChain {
     public static final int CUT_OFF_AGE = 10;
   
     /**
-     * create an empty block chain with just a genesis block. Assume {@code genesisBlock} is
-     * a valid block
+     * Create an empty block chain with just a genesis block. 
+     * Assume {@code genesisBlock} is a valid block.
      */
     public BlockChain(Block genesisBlock) {
         // IMPLEMENT THIS
     }
   
-    /** Get the maximum height block */
+    /**
+     * Get the maximum height block.
+     */
     public Block getMaxHeightBlock() {
         // IMPLEMENT THIS
     }
   
-    /** Get the UTXOPool for mining a new block on top of max height block */
+    /**
+     * Get the UTXOPool for mining a new block on top of max height block.
+     */
     public UTXOPool getMaxHeightUTXOPool() {
         // IMPLEMENT THIS
     }
   
-    /** Get the transaction pool to mine a new block */
+    /**
+     * Get the transaction pool to mine a new block.
+     */
     public TransactionPool getTransactionPool() {
         // IMPLEMENT THIS
     }
   
     /**
-     * Add {@code block} to the block chain if it is valid. For validity, all transactions
-     * should be valid and block should be at {@code height > (maxHeight - CUT_OFF_AGE)}.
-     * For example, you can try creating a new block over the genesis block (block height 2)
-     * if the block chain height is {@code <= CUT_OFF_AGE + 1}. As soon as {@code height >
-     * CUT_OFF_AGE + 1}, you cannot create a new block at height 2.
+     * Add {@code block} to the block chain if it is valid. For validity, all transactions should be
+     * valid and block should be at {@code height > (maxHeight - CUT_OFF_AGE)};
+     * <p>
+     * For example, you can try creating a new block over the genesis block (block height 2) if the
+     * blockchain maxHeight is {@code <= CUT_OFF_AGE + 1}. As soon as {@code maxHeight > CUT_OFF_AGE + 1},
+     * you cannot create a new block at height 2.
+     *
      * @return true if block is successfully added
      */
     public boolean addBlock(Block block) {
         // IMPLEMENT THIS
     }
   
-    /** Add a transaction to the transaction pool */
+    /** 
+     * Add a transaction to the transaction pool 
+     */
     public void addTransaction(Transaction tx) {
         // IMPLEMENT THIS
     }
@@ -101,24 +111,142 @@ public class BlockChain {
 
 The runnable result code is a and b.  In this section, I will elaborate the **implementation** and **test** code writing logic:
 
-- The **implementation of blockChain class**.
+- The **implementation of BlockChain class**.
 - The **test suite** to verify the related implementation.
 
 ### 2.1 Details of the implementation
 
-**Storage structure of blockChain.**
+**Part 0. Storage structure of block chain.**
 
-Given there might be multiple forks, the data structure of the block chain **should be a tree rather than a list**. While, for the storage structure, there is no need to store the blocks in to the tree because we can create a tree data structure using a list by storing the hash of this block and the state of this block in the block chain. The state of the block records the **1) content of this block**, **2) the height of the block** and **3) the corresponding UTXOPool**. Based on this, I build a `BlockState` class in `BlockState.java` to store these three elements and the ways to get them.
+Given there might be multiple forks, the data structure of the block chain **should be a tree rather than a list**. While, for the storage structure, there is no need to store the blocks in the tree because we can create a tree data structure using a list by storing the hash of this block and the state of this block in the block chain. The state of the block records the **1) content of this block**, **2) the height of the block** and **3) the corresponding UTXOPool**. Based on this, I build a `BlockState` class in `BlockState.java` to store these three elements and the ways to get them.
 
-Considering that **the order of storage is meaningless**, it would be inconvenient if we use list to store the block chain. Finally, I decided to **use Map as the storage structure**, as shown in Figure 1.  The attribute in `BlockChain` should be defined as:
+Considering that **the order of storage is meaningless**, it would be inconvenient if we use the list to store the block chain. Finally, I decided to **use Map as the storage structure**, as shown in Figure 1.  The attribute in `BlockChain` should be defined as:
 
 ```java
 private Map<byte[], BlockState> blockChain;
 ```
 
-The `hash` of the block is the key and the `state` of the blcok is the value in this map, and they can form a one-to-one mapping. This not only allows for an **efficient implementation** of the data storage structure, but also **improves the efficiency** of block chain related operations, such as searching.
+The `hash` of the block is the key and the `state` of the blcok is the value in this map, and they can form a one-to-one mapping. At the same time, I maintain a state variable `latestBlockState` that indicates the status of the latest block in the longest valid branch. This not only allows for an **efficient implementation** of the data storage structure, but also **improves the efficiency** of block chain related operations, such as searching.
 
+**Part 1. Construtor: `BlockChain(Block genesisBlock)`**
 
+This constructor is used to create a block chain with just a genesis block. The implementation can be devided into **four steps**:
+
+- Step 1. Initialize the state of genesisBlock `genesisBlockState`, including the block, its height, and the current utxoPool.
+
+  ```java
+  Transaction coinbaseTx = genesisBlock.getCoinbase();
+  UTXOPool genesisUtxoPool = new UTXOPool();
+  UTXO utxo = new UTXO(coinbaseTx.getHash(), 0);
+  genesisUtxoPool.addUTXO(utxo, coinbaseTx.getOutput(0));
+  BlockState genesisBlockChainState = new BlockState(genesisBlock, 1, genesisUtxoPool);
+  ```
+
+- Step 2. Add the `genesisBlockState` to an empty block chain.
+
+  ```java
+  blockChain = new HashMap<byte[], BlockState>();
+  blockChain.put(genesisBlock.getHash(), genesisBlockChainState);
+  ```
+
+- Step 3: Initialize the `latestBlockState` to record the latest block's state in the longest valid branch.
+
+  ```java
+  latestBlockState = genesisBlockChainState;
+  ```
+
+- Step 4: initialize the global Transaction Pool `transactionPool`.
+
+  ```java
+  transactionPool = new TransactionPool();
+  ```
+
+**Part 2. Get Max Height Block State: `getMaxHeightBlock()` & `getMaxHeightUTXOPool()`**
+
+These two methods are used to get the **maximum height block** and the **UTXOPool** for mining a new block on top of max height block respectively. Since I have recorded the latest block's state in the longest valid branch, as long as the  `latestBlockState` can be managed wisely, I can get them easily using the following interface:
+
+```java
+public Block getMaxHeightBlock() {
+    return latestBlockState.block;
+}
+
+public UTXOPool getMaxHeightUTXOPool() {
+    return latestBlockState.utxoPool;
+}
+```
+
+Attention: If there are multiple blocks at the same height, the `getMaxHeightBlock()` function should return the **oldest block**, so when faced with the same height, `latestBlockState` stores the state of the oldest block at all times.
+
+**Part 3. Get the Pool of Txs: `getTransactionPool()`**
+
+This method is used to get the transaction pool to mine a new block. From the assumptions and hints, we know that we could maintain **only one global transaction pool for the block chain**. So the interface should be:
+
+```java
+public TransactionPool getTransactionPool() {
+    return new TransactionPool(transactionPool);
+}
+```
+
+**Part 4. Add block to block chain: `addBlock()`**
+
+This method is used to add the block to the block chain if it is valid.  It returns `true` only if the block meets the following three conditions:
+
+- Condition 1. The block's parent node is valid.  If the block claims to be a genesis block (parent is a null hash) or its parent node isn't in the previous block chain, returns `false`.
+
+  ```java
+  if (block.getPrevBlockHash() == null || !blockChain.containsKey(block.getPrevBlockHash())) {
+      return false;
+  }
+  ```
+
+- Condition 2. All the transactions in the block should be valid. This condition makes sure that there is **no invalid transactions in the block**. Using `block.getTransactions()` to get the block's transactions and checking by `TxHandler().handleTxs()`, if the number of transaction is not change, then all are valid!
+
+  ```java
+  else if (!allTransactionsValid(block)) {
+      return false;
+  }
+  
+  private boolean allTransactionsValid(Block block) {
+      // get the block's transactions
+      Transaction[] blockTxs = block.getTransactions().toArray(new     Transaction[block.getTransactions().size()]);
+      // checking them by handler to get valid transactions
+      BlockState parentBlockState = blockChain.get(block.getPrevBlockHash());
+      Transaction[] validTxs = new TxHandler(parentBlockState.getUtxoPool()).handleTxs(blockTxs);
+      // test whether number of Txs is change or not
+      return blockTxs.length == validTxs.length;
+  }
+  ```
+
+- Condition 3. The CUT_OFF_AGE condition should be satisfied. For simplicity, the block should also meet the criteria that the `height > (maxHeight - CUT_OFF_AGE)`. If not, it returns `false`. Get the height of the block's parent node, check if `parentBlockState Height + 1 > maxHeight - CUT_OFF_AGE`.
+
+  ```java
+  else if (!CUT_OFF_AGE_Condition(block)) {
+      return false;
+  }
+  
+  private boolean CUT_OFF_AGE_Condition(Block block) {
+      BlockState parentBlockState = blockChain.get(block.getPrevBlockHash());
+      return parentBlockState.getHeight() + 1 > latestBlockState.getHeight() - CUT_OFF_AGE;
+  }
+  ```
+
+If the given block can meet the above three conditions, it returns `true`, which means the block is valid and can be added to the block chain. Then we need to do the following 3 steps to finish the `addBlock()` process:
+
+- Step 1. Add this block into the block chain by recording its block state and the hash into the map `blockChain`.
+- Step 2. Update the TransactionPool. From the assumptions and hints we know that it’s okay if some transactions get dropped during a block chain reorganization. So I don't take the block chain reorganization's effect into consideration and remove the block's transactions out of the TransactionPool.
+- Step 3. Delete the previous block to meet the storage condition. Since the entire block chain could be huge in size, I just keep around the most recent blocks. The threshold value is represented as `STORAGE=20`.
+
+The code of this part is long, so i don't paste it here, you can check it in the raw code file.
+
+**Part 5. Add Transactions: `addTransaction()`**
+
+This method is used to add a transaction to the transaction pool.
+
+```java
+public void addTransaction(Transaction tx) {
+    transactionPool.addTransaction(tx);
+}
+```
 
 
 
