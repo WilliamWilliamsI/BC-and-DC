@@ -154,23 +154,6 @@ public class TxHandler {
         return acceptedTxs.toArray(new Transaction[acceptedTxs.size()]);
     }
 
-    private void addCreatedCoinsToPool(Transaction tx) {
-        List<Transaction.Output> outputs = tx.getOutputs();
-        for (int j = 0; j < outputs.size(); j++) {
-            Transaction.Output output = outputs.get(j);
-            UTXO utxo = new UTXO(tx.getHash(), j);
-            utxoPool.addUTXO(utxo, output);
-        }
-    }
-
-    private void removeConsumedCoinsFromPool(Transaction tx) {
-        List<Transaction.Input> inputs = tx.getInputs();
-        for (int j = 0; j < inputs.size(); j++) {
-            Transaction.Input input = inputs.get(j);
-            UTXO utxo = new UTXO(input.prevTxHash, input.outputIndex);
-            utxoPool.removeUTXO(utxo);
-        }
-    }
 
     public UTXOPool getUTXOPool() {
         return utxoPool;
