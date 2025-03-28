@@ -4,7 +4,7 @@
 >
 > 本 Note 以郑老师上课 PPT 为基础，结合 2019 年考试真题进行整理。
 >
-> 覆盖了 PPT 所讲重点内容，梳理整体框架，并尽可能命中考点。[Ref.](https://www.bilibili.com/video/BV1Vt411X7JF?spm_id_from=333.788.videopod.episodes&bvid=BV1Vt411X7JF&vd_source=66823c3216b82637e31f708a5e627a0b&p=18)
+> 覆盖了 PPT 所讲重点内容，梳理整体框架，并尽可能命中考点。在一些较难理解的部份参考了[肖老师的视频](https://www.bilibili.com/video/BV1Vt411X7JF?spm_id_from=333.788.videopod.episodes&bvid=BV1Vt411X7JF&vd_source=66823c3216b82637e31f708a5e627a0b&p=18)
 >
 > ```java
 > // Part 1. Foundation 
@@ -15,8 +15,12 @@
 > Lecture 3. Digital Signatures // 加密手段
 > Lecture 5. Transcript Applications // 交易的验证
 > Lecture 6. Double Spending and Network // 具体难题破解和网络构造
->   
+> 
 > // Part 3. Ethereum
+> Lecture 7. Ethereum
+> Lecture 8. Ethereum Tries
+> Lecture 9. Ethereum Mining
+> Lecture 10. Smart Contract and Gas
 > ```
 
 
@@ -461,7 +465,7 @@ Verifications usually consist of 2 parts for **every single input**:
 
 **scriptPubKey**
 
-锁定脚本（scriptPubKey）又称为输出脚本。锁定脚本是一个放在 UTXO 输出上的花费条件，它指定了今后花费这笔比特币必须满足的条件。通俗的理解就是：比如 Zarten1 转给 Zarten2 5BT C时，当这一笔交易完成时，都有一个或多个输出保存在 UTXO 中，这些输出里面就包含有锁定脚本，那今后 **Zarten2 需要使用这 5BTC 时必须要满足锁定脚本里的条件才能使用**。如上面的图中的锁定脚本所示，其中的核心是：1) 加密脚本的类型(`type:pubKeyHas`); 2) 目标地址(`addresses`).
+锁定脚本（scriptPubKey）又称为输出脚本。锁定脚本是一个放在 UTXO 输出上的花费条件，它指定了今后花费这笔比特币必须满足的条件。通俗的理解就是：比如 Zarten1 转给 Zarten2 5BT C时，当这一笔交易完成时，都有一个或多个输出保存在 UTXO 中，这些输出里面就包含有锁定脚本，那今后 **Zarten2 需要使用这 5BTC 时必须要满足锁定脚本里的条件才能使用**。如上面的图中的锁定脚本所示，其中的核心是：1) 加密脚本的类型(`type:pubKeyHash`); 2) 目标地址(`addresses`).
 
 **scriptSig**
 
@@ -624,7 +628,7 @@ Input 是明摆的，进行 P2PKH 只需给出 Sig 和 PubKey
 **Content**（选择题）
 
 - Bitcoin Block 里面包含: block header, transaction data 和 hashed during mining (hash, nonce, mrkl_root)
-- Transaction Data: input, output 和 metadata
+- Transaction Data: inputs, outputs 和 metadata
 
 **coinbase Transaction**
 
@@ -774,7 +778,7 @@ About 90% of nodes run “Core Bitcoin” (C++). 也就是说不是所有的 BTC
 
 
 
-### Lecture 7. Ethereum
+## Lecture 7. Ethereum
 
 > 到了上一章 BTC 的内容就全部讲完了，认识到了它的优点和缺点，从这一章开始引入以太坊 (Ethereum) 进行升级讲解
 
@@ -856,7 +860,7 @@ About 90% of nodes run “Core Bitcoin” (C++). 也就是说不是所有的 BTC
 - `storageRoot`: Hash of the root node of a Merkle Patricia tree. The tree is empty by default.
 - `codeHash`: Hash of empty string / Hash of the EVM (Ethereum Virtual Machine ) code of this account
 
-### 7.3 Merkle Patricia tree
+### 7.3 Merkle Patricia Trie
 
 **Concept**
 
@@ -914,8 +918,6 @@ Block 的头极为重要，包含了三根树的地址，也就表示了整个 B
 ### 8.2 World State Trie (Word State Trie + Account Storage Trie)
 
 **Concepts**
-
-<img src="./NOTE.assets/8.2.png" alt="8.2" style="zoom:40%;" />
 
 - The state root is the **hash of the MPT** of all accounts.
 - A new block **only contains modifications** caused by transactions, 没有变化的直接给 hash 值
@@ -1005,7 +1007,7 @@ Receipt tree always accompany transaction tree
 
 
 
-## Lectue 9. Ethereum Mining
+## Lecture 9. Ethereum Mining
 
 > 基本了解了以太坊的底层构造，下面就开始思考如何维护和运营以太坊，其中的核心就是挖矿。
 
@@ -1082,8 +1084,6 @@ The chance of a miner to get a valid block is proportional to his/her mining pow
   <img src="./NOTE.assets/9.3.png" alt="9.3" style="zoom:40%;" />
 
 - 其对应的 Uncle Block 的 Reward 为（只有 Uncle Reward，没有 Gas Fee）
-
-  <img src="./NOTE.assets/image-20250327144459296.png" alt="image-20250327144459296" style="zoom:40%;" />
 
 - 其 Parent Block `Height = 12675122` 的 Reward 为（Block Reward + Gas Fee）
 
