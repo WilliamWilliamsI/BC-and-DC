@@ -1,6 +1,15 @@
 # paobuliao-front-end
 
-## Project setup
+```python
+BC-and-DC/
+├── 
+├── .github/ # The github actions config.
+└── .gitignore # The gitignore file.
+```
+
+
+
+## Project setup command lines
 ```
 npm install
 ```
@@ -22,3 +31,7 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+
+## Code introduction
