@@ -12,9 +12,3 @@ BC-and-DC/
 └── .gitignore # The gitignore file.
 ```
 
-
-
-
-
-# Good night Kai.  
-by: Prince at 00:55
