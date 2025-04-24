@@ -7,6 +7,10 @@ BC-and-DC/
 └── .gitignore # The gitignore file.
 ```
 
+## Code introduction
+
+
+
 
 
 ## Project setup command lines
@@ -34,4 +38,3 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 
 
-## Code introduction
