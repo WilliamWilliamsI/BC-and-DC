@@ -11,8 +11,6 @@ BC-and-DC/
 
 
 
-
-
 ## Project setup command lines
 ```
 npm install
